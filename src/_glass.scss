@@ -128,15 +128,22 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  // --ig-user-aurora is the Style Settings strength slider. Its floor is 0.4,
+  // not 0: contrast-check verifies the panes against the aurora-composited
+  // backdrop, so glass with no backdrop at all is an unverified state. The
+  // routes to zero aurora are the ones that also make the surfaces opaque —
+  // reduced-transparency and high contrast in _a11y.scss.
   background:
     radial-gradient(
       120% 90% at 15% 0%,
-      hsl(var(--accent-h) 70% var(--ig-aurora-l) / var(--ig-aurora-a)) 0%,
+      hsl(var(--accent-h) 70% var(--ig-aurora-l) /
+        calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%,
       transparent 60%
     ),
     radial-gradient(
       100% 80% at 85% 100%,
-      hsl(calc(var(--accent-h) + 60) 60% var(--ig-aurora-l) / var(--ig-aurora-a)) 0%,
+      hsl(calc(var(--accent-h) + 60) 60% var(--ig-aurora-l) /
+        calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%,
       transparent 55%
     );
 }

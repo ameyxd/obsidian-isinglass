@@ -1,0 +1,85 @@
+// ---------------------------------------------------------------------------
+// Accessibility
+// ---------------------------------------------------------------------------
+// Almost everything here works by zeroing the variables the glass system is
+// built from, rather than fighting its selectors. Because every alpha is
+// `calc(1 - coefficient * var(--ig-translucency) * var(--ig-user-glass))`,
+// setting one multiplier to zero collapses the whole theme to opaque in a
+// single declaration — and no Style Settings value can argue with it, because
+// multipliers compose instead of competing on specificity.
+//
+// Of the 30 community themes surveyed for this project, zero honour
+// prefers-reduced-transparency and one honours prefers-reduced-motion.
+// ---------------------------------------------------------------------------
+
+// --- Reduced transparency ---------------------------------------------------
+// The OS-level "Reduce transparency" setting. A person who set it has asked
+// for no glass anywhere; give them the opaque theme, not a fainter glass.
+
+@media (prefers-reduced-transparency: reduce) {
+  body {
+    --ig-translucency: 0;
+    --ig-float-translucency: 0;
+    --ig-aurora-a: 0;
+    --ig-grain-opacity: 0;
+    --ig-blur: 0px;
+    --ig-blur-saturate: 100%;
+  }
+
+  // The pane frost is a filter, not an alpha, so it needs an explicit off.
+  body:not(.is-mobile) .workspace-split.mod-left-split,
+  body:not(.is-mobile) .workspace-split.mod-right-split,
+  body:not(.is-mobile) .workspace-tabs .workspace-leaf-content {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  // With the toggle on, macOS clears the window under us; put a floor back.
+  body.is-translucent {
+    --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
+  }
+}
+
+// --- Reduced motion ----------------------------------------------------------
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    --ig-duration-fast: 0ms;
+    --ig-duration: 0ms;
+  }
+}
+
+// --- High contrast mode ------------------------------------------------------
+// A Style Settings toggle (class-toggle: ig-high-contrast, with a command).
+// Fully opaque, harder borders, and the dimmer text tokens pulled toward full
+// contrast. Also applied automatically when the OS asks for more contrast.
+
+@mixin high-contrast {
+  --ig-translucency: 0;
+  --ig-float-translucency: 0;
+  --ig-aurora-a: 0;
+  --ig-grain-opacity: 0;
+
+  --ig-border: var(--ig-border-strong);
+  --ig-text-faint: var(--ig-text-muted);
+}
+
+body.ig-high-contrast {
+  @include high-contrast;
+}
+
+body.ig-high-contrast.theme-light {
+  --ig-text-muted: hsl(220 15% 22%);
+  --ig-border-strong: hsl(220 15% 55%);
+}
+
+body.ig-high-contrast.theme-dark {
+  --ig-text-muted: hsl(220 15% 86%);
+  --ig-border-strong: hsl(220 12% 52%);
+}
+
+@media (prefers-contrast: more) {
+  body {
+    @include high-contrast;
+  }
+}

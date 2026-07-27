@@ -1,0 +1,165 @@
+// ---------------------------------------------------------------------------
+// Style Settings
+// ---------------------------------------------------------------------------
+// The @settings block below is read by the Style Settings plugin. Two rules
+// keep it honest:
+//
+// 1. Variable sliders write plain multipliers (--ig-user-*) that can only
+//    REDUCE effects. They never rewrite --ig-translucency directly, because
+//    Style Settings injects on body.css-settings-manager, which would beat the
+//    mobile and appearance-mismatch reductions — a user slider must not be able
+//    to undo a safety fallback. Multipliers compose instead of competing.
+//
+// 2. Nothing here can exceed the contrast ceiling. Every slider maximum is the
+//    value contrast-check verifies; there is deliberately no "more glass than
+//    AA allows" position.
+//
+// Class-toggle behaviour rules live at the bottom of this file so the classes
+// and the block that declares them stay in one place.
+// ---------------------------------------------------------------------------
+
+/* @settings
+name: Isinglass
+id: isinglass
+settings:
+  -
+    id: ig-glass-heading
+    title: Glass
+    type: heading
+    level: 1
+    collapsed: false
+  -
+    id: ig-user-glass
+    title: Glass intensity
+    description: How translucent the workspace surfaces are. The maximum is the highest value that passes WCAG AA contrast.
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 1
+    step: 0.05
+  -
+    id: ig-user-aurora
+    title: Backdrop strength
+    description: The soft accent-tinted field behind the workspace that the glass frosts over.
+    type: variable-number-slider
+    default: 1
+    min: 0.4
+    max: 1
+    step: 0.05
+  -
+    id: ig-frost
+    title: Frost blur
+    description: How strongly the panes blur the backdrop behind them.
+    type: variable-number-slider
+    default: 40
+    min: 0
+    max: 60
+    step: 5
+    format: px
+  -
+    id: ig-no-grain
+    title: Disable texture grain
+    description: Removes the fine noise texture from floating surfaces.
+    type: class-toggle
+    default: false
+  -
+    id: ig-type-heading
+    title: Typography
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: file-line-width
+    title: Reading line width
+    description: Maximum width of the note text column.
+    type: variable-number-slider
+    default: 40
+    min: 30
+    max: 60
+    step: 1
+    format: rem
+  -
+    id: line-height-normal
+    title: Body line height
+    type: variable-number-slider
+    default: 1.6
+    min: 1.4
+    max: 1.8
+    step: 0.05
+  -
+    id: ig-layout-heading
+    title: Layout
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: ig-compact
+    title: Compact density
+    description: Tightens spacing throughout the interface.
+    type: class-toggle
+    default: false
+  -
+    id: ig-chrome-heading
+    title: Chrome
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: ig-hide-ribbon
+    title: Hide ribbon
+    type: class-toggle
+    default: false
+  -
+    id: ig-hide-status
+    title: Hide status bar
+    type: class-toggle
+    default: false
+  -
+    id: ig-hide-tabs
+    title: Hide tab bar
+    description: Hides the tab strip. Use the quick switcher or back and forward to navigate.
+    type: class-toggle
+    default: false
+  -
+    id: ig-a11y-heading
+    title: Accessibility
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: ig-high-contrast
+    title: High contrast mode
+    description: Fully opaque surfaces, stronger borders, and higher-contrast secondary text.
+    type: class-toggle
+    default: false
+    addCommand: true
+*/
+
+// --- Behaviour for the classes declared above --------------------------------
+
+body.ig-no-grain {
+  --ig-grain-opacity: 0;
+}
+
+body.ig-compact {
+  --ig-space-2: 6px;
+  --ig-space-3: 9px;
+  --ig-space-4: 12px;
+  --ig-space-5: 18px;
+  --ig-space-6: 24px;
+  --line-height-normal: 1.5;
+}
+
+body.ig-hide-ribbon .workspace-ribbon.mod-left {
+  display: none;
+}
+
+body.ig-hide-status .status-bar {
+  display: none;
+}
+
+body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
+  display: none;
+}
+
+// ig-high-contrast behaviour lives in _a11y.scss beside the media-query twin.

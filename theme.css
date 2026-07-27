@@ -942,7 +942,7 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(120% 90% at 15% 0%, hsl(var(--accent-h), 70%, var(--ig-aurora-l), var(--ig-aurora-a)) 0%, transparent 60%), radial-gradient(100% 80% at 85% 100%, hsl(calc(var(--accent-h) + 60), 60%, var(--ig-aurora-l), var(--ig-aurora-a)) 0%, transparent 55%);
+  background: radial-gradient(120% 90% at 15% 0%, hsl(var(--accent-h), 70%, var(--ig-aurora-l), calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%, transparent 60%), radial-gradient(100% 80% at 85% 100%, hsl(calc(var(--accent-h) + 60), 60%, var(--ig-aurora-l), calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%, transparent 55%);
 }
 
 body.theme-light {
@@ -971,4 +971,286 @@ body.is-translucent .workspace-split.mod-left-split {
 }
 body.is-translucent .workspace-split.mod-right-split {
   border-inline-start: 1px solid var(--ig-glass-highlight-soft);
+}
+
+body.is-mobile .nav-file-title,
+body.is-mobile .nav-folder-title {
+  min-height: 44px;
+  align-items: center;
+}
+body.is-mobile .suggestion-item {
+  padding-block: var(--ig-space-3);
+  min-height: 44px;
+}
+body.is-mobile .menu-item {
+  padding-block: var(--ig-space-3);
+}
+body.is-mobile .workspace-tab-header {
+  min-height: 44px;
+}
+
+body.is-mobile input[type=text],
+body.is-mobile input[type=search],
+body.is-mobile textarea,
+body.is-mobile .prompt-input,
+body.is-mobile .search-input-container input {
+  font-size: max(1em, 16px);
+}
+
+body.is-mobile .mobile-toolbar {
+  background-color: var(--ig-surface-1);
+  border-block-start: var(--ig-hairline) solid var(--ig-border);
+}
+body.is-mobile .mobile-toolbar-option {
+  color: var(--ig-text-muted);
+  border-radius: var(--ig-radius-sm);
+}
+body.is-mobile .mobile-navbar {
+  background-color: var(--ig-surface-1);
+  border-block-start: var(--ig-hairline) solid var(--ig-border);
+}
+
+body.is-phone {
+  --file-line-width: 100%;
+}
+
+.block-language-dataview .dataview.small-text {
+  color: var(--ig-text-faint);
+  font-family: var(--font-interface-theme);
+  font-size: 0.8em;
+}
+
+.dataview.inline-field {
+  border-radius: var(--ig-radius-sm);
+  font-size: 0.9em;
+}
+
+.dataview.inline-field-key {
+  background-color: var(--ig-surface-3);
+  color: var(--ig-text-muted);
+  padding-inline: 0.4em;
+}
+
+.dataview.inline-field-value {
+  background-color: hsl(var(--accent-h), var(--accent-s), var(--accent-l), 0.1);
+  color: var(--text-accent);
+  padding-inline: 0.4em;
+}
+
+.block-language-tasks .tasks-backlink,
+.block-language-tasks .task-extras {
+  font-family: var(--font-interface-theme);
+  font-size: 0.85em;
+  color: var(--ig-text-faint);
+}
+.block-language-tasks .tasks-backlink a {
+  color: var(--ig-text-faint);
+  border-bottom: none;
+}
+.block-language-tasks .tasks-backlink a:hover {
+  color: var(--text-accent);
+}
+.block-language-tasks .tasks-count {
+  color: var(--ig-text-faint);
+  font-size: 0.8em;
+}
+
+.task-priority {
+  border-radius: var(--ig-radius-sm);
+}
+
+/* @settings
+name: Isinglass
+id: isinglass
+settings:
+  -
+    id: ig-glass-heading
+    title: Glass
+    type: heading
+    level: 1
+    collapsed: false
+  -
+    id: ig-user-glass
+    title: Glass intensity
+    description: How translucent the workspace surfaces are. The maximum is the highest value that passes WCAG AA contrast.
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 1
+    step: 0.05
+  -
+    id: ig-user-aurora
+    title: Backdrop strength
+    description: The soft accent-tinted field behind the workspace that the glass frosts over.
+    type: variable-number-slider
+    default: 1
+    min: 0.4
+    max: 1
+    step: 0.05
+  -
+    id: ig-frost
+    title: Frost blur
+    description: How strongly the panes blur the backdrop behind them.
+    type: variable-number-slider
+    default: 40
+    min: 0
+    max: 60
+    step: 5
+    format: px
+  -
+    id: ig-no-grain
+    title: Disable texture grain
+    description: Removes the fine noise texture from floating surfaces.
+    type: class-toggle
+    default: false
+  -
+    id: ig-type-heading
+    title: Typography
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: file-line-width
+    title: Reading line width
+    description: Maximum width of the note text column.
+    type: variable-number-slider
+    default: 40
+    min: 30
+    max: 60
+    step: 1
+    format: rem
+  -
+    id: line-height-normal
+    title: Body line height
+    type: variable-number-slider
+    default: 1.6
+    min: 1.4
+    max: 1.8
+    step: 0.05
+  -
+    id: ig-layout-heading
+    title: Layout
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: ig-compact
+    title: Compact density
+    description: Tightens spacing throughout the interface.
+    type: class-toggle
+    default: false
+  -
+    id: ig-chrome-heading
+    title: Chrome
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: ig-hide-ribbon
+    title: Hide ribbon
+    type: class-toggle
+    default: false
+  -
+    id: ig-hide-status
+    title: Hide status bar
+    type: class-toggle
+    default: false
+  -
+    id: ig-hide-tabs
+    title: Hide tab bar
+    description: Hides the tab strip. Use the quick switcher or back and forward to navigate.
+    type: class-toggle
+    default: false
+  -
+    id: ig-a11y-heading
+    title: Accessibility
+    type: heading
+    level: 1
+    collapsed: true
+  -
+    id: ig-high-contrast
+    title: High contrast mode
+    description: Fully opaque surfaces, stronger borders, and higher-contrast secondary text.
+    type: class-toggle
+    default: false
+    addCommand: true
+*/
+body.ig-no-grain {
+  --ig-grain-opacity: 0;
+}
+
+body.ig-compact {
+  --ig-space-2: 6px;
+  --ig-space-3: 9px;
+  --ig-space-4: 12px;
+  --ig-space-5: 18px;
+  --ig-space-6: 24px;
+  --line-height-normal: 1.5;
+}
+
+body.ig-hide-ribbon .workspace-ribbon.mod-left {
+  display: none;
+}
+
+body.ig-hide-status .status-bar {
+  display: none;
+}
+
+body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
+  display: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body {
+    --ig-translucency: 0;
+    --ig-float-translucency: 0;
+    --ig-aurora-a: 0;
+    --ig-grain-opacity: 0;
+    --ig-blur: 0px;
+    --ig-blur-saturate: 100%;
+  }
+  body:not(.is-mobile) .workspace-split.mod-left-split,
+  body:not(.is-mobile) .workspace-split.mod-right-split,
+  body:not(.is-mobile) .workspace-tabs .workspace-leaf-content {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  body.is-translucent {
+    --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body {
+    --ig-duration-fast: 0ms;
+    --ig-duration: 0ms;
+  }
+}
+body.ig-high-contrast {
+  --ig-translucency: 0;
+  --ig-float-translucency: 0;
+  --ig-aurora-a: 0;
+  --ig-grain-opacity: 0;
+  --ig-border: var(--ig-border-strong);
+  --ig-text-faint: var(--ig-text-muted);
+}
+
+body.ig-high-contrast.theme-light {
+  --ig-text-muted: hsl(220 15% 22%);
+  --ig-border-strong: hsl(220 15% 55%);
+}
+
+body.ig-high-contrast.theme-dark {
+  --ig-text-muted: hsl(220 15% 86%);
+  --ig-border-strong: hsl(220 12% 52%);
+}
+
+@media (prefers-contrast: more) {
+  body {
+    --ig-translucency: 0;
+    --ig-float-translucency: 0;
+    --ig-aurora-a: 0;
+    --ig-grain-opacity: 0;
+    --ig-border: var(--ig-border-strong);
+    --ig-text-faint: var(--ig-text-muted);
+  }
 }

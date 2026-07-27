@@ -1,0 +1,77 @@
+// ---------------------------------------------------------------------------
+// Plugin support: Dataview, Tasks, Notebook Navigator
+// ---------------------------------------------------------------------------
+// Most of the work is already done by the variable bridge in _tiers.scss:
+// all three plugins read Obsidian's standard variables (--background-*,
+// --nav-item-*, --text-*), so they inherit the elevation model for free.
+// This file only covers the output those variables do not reach.
+//
+// Notebook Navigator in particular themes itself entirely from the --nav-*
+// family set in _components.scss, so it gets no selectors here on purpose —
+// styling a plugin's internal class names couples the theme to its releases.
+// ---------------------------------------------------------------------------
+
+// --- Dataview ----------------------------------------------------------------
+// Tables and lists inside .block-language-dataview inherit the core table and
+// list styling. What needs help is the metadata Dataview renders itself.
+
+.block-language-dataview {
+  // Result-count / error line under queries.
+  .dataview.small-text {
+    color: var(--ig-text-faint);
+    font-family: var(--font-interface-theme);
+    font-size: 0.8em;
+  }
+}
+
+// Inline fields (key:: value) render as chips; match the tag treatment so the
+// page has one metadata language.
+.dataview.inline-field {
+  border-radius: var(--ig-radius-sm);
+  font-size: 0.9em;
+}
+
+.dataview.inline-field-key {
+  background-color: var(--ig-surface-3);
+  color: var(--ig-text-muted);
+  padding-inline: 0.4em;
+}
+
+.dataview.inline-field-value {
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.1);
+  color: var(--text-accent);
+  padding-inline: 0.4em;
+}
+
+// --- Tasks -------------------------------------------------------------------
+// Query blocks render standard task-list markup, covered by _editor.scss.
+// The plugin's own metadata trail (backlinks, priority, dates) should recede.
+
+.block-language-tasks {
+  .tasks-backlink,
+  .task-extras {
+    font-family: var(--font-interface-theme);
+    font-size: 0.85em;
+    color: var(--ig-text-faint);
+  }
+
+  .tasks-backlink a {
+    color: var(--ig-text-faint);
+    border-bottom: none;
+  }
+
+  .tasks-backlink a:hover {
+    color: var(--text-accent);
+  }
+
+  // Count line under a query.
+  .tasks-count {
+    color: var(--ig-text-faint);
+    font-size: 0.8em;
+  }
+}
+
+// Priority markers keep their semantic colours; just align the shape.
+.task-priority {
+  border-radius: var(--ig-radius-sm);
+}

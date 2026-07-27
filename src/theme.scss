@@ -16,3 +16,9 @@
 @use 'components';
 @use 'floating';
 @use 'glass';
+@use 'mobile';
+@use 'plugins';
+@use 'style-settings';
+// a11y loads last: its explicit overrides must win order ties against
+// everything above, so a reduced-transparency user always gets opaque.
+@use 'a11y';

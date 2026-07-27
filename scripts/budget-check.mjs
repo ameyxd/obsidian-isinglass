@@ -28,7 +28,11 @@ const count = (re) => (css.match(re) ?? []).length;
 const budgets = [
   {
     name: 'backdrop-filter rules',
-    actual: count(/(?<!-webkit-)backdrop-filter\s*:/g),
+    // `backdrop-filter: none` disables an effect (the a11y fallbacks); only
+    // rules that actually apply a filter carry paint cost.
+    // Lookahead before consuming whitespace — `:\s*(?!none)` lets the engine
+    // backtrack the \s* and match anyway.
+    actual: count(/(?<!-webkit-)backdrop-filter\s*:(?!\s*none)/g),
     max: 12,
     note: 'blur belongs on L4 floating layers only, never on scrolled surfaces',
   },

@@ -1,0 +1,85 @@
+// ---------------------------------------------------------------------------
+// Mobile
+// ---------------------------------------------------------------------------
+// Obsidian mobile handles most safe-area work itself (the app defines its own
+// --safe-area-inset-* variables and pads the view header and toolbar with
+// them), so this file deliberately does not re-implement layout. It covers the
+// three things a desktop-first theme actually gets wrong on a phone: touch
+// target size, iOS input zoom, and paint cost.
+//
+// Untested on-device this cycle — every rule here is defensive and additive,
+// nothing repositions Obsidian's own mobile chrome.
+// ---------------------------------------------------------------------------
+
+// --- Paint cost --------------------------------------------------------------
+// The pane frost in _glass.scss is already gated to body:not(.is-mobile) —
+// WKWebView pays real scroll cost for backdrop-filter on large surfaces. The
+// aurora stays: it is one static gradient, painted once.
+
+// --- Touch targets -----------------------------------------------------------
+// Apple's floor is 44pt. Desktop density is comfortable with a mouse and
+// hostile to thumbs.
+
+body.is-mobile {
+  .nav-file-title,
+  .nav-folder-title {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  .suggestion-item {
+    padding-block: var(--ig-space-3);
+    min-height: 44px;
+  }
+
+  .menu-item {
+    padding-block: var(--ig-space-3);
+  }
+
+  .workspace-tab-header {
+    min-height: 44px;
+  }
+}
+
+// --- iOS input zoom ----------------------------------------------------------
+// Safari force-zooms the viewport when a focused input's font-size is under
+// 16px, and the workspace is left half-zoomed afterwards. Every text input the
+// theme touches gets floored at 16px on mobile.
+
+body.is-mobile {
+  input[type='text'],
+  input[type='search'],
+  textarea,
+  .prompt-input,
+  .search-input-container input {
+    font-size: max(1em, 16px);
+  }
+}
+
+// --- Mobile toolbar ----------------------------------------------------------
+// The editing toolbar above the keyboard sits at L1 like the other chrome.
+
+body.is-mobile {
+  .mobile-toolbar {
+    background-color: var(--ig-surface-1);
+    border-block-start: var(--ig-hairline) solid var(--ig-border);
+  }
+
+  .mobile-toolbar-option {
+    color: var(--ig-text-muted);
+    border-radius: var(--ig-radius-sm);
+  }
+
+  .mobile-navbar {
+    background-color: var(--ig-surface-1);
+    border-block-start: var(--ig-hairline) solid var(--ig-border);
+  }
+}
+
+// --- Phone-specific ----------------------------------------------------------
+// On a phone the note takes the whole width; the reading measure is the screen,
+// so the desktop line-width clamp must not fight it.
+
+body.is-phone {
+  --file-line-width: 100%;
+}
