@@ -79,6 +79,10 @@ body.is-translucent {
   --ig-translucency: 1;
 }
 
+body.is-translucent.theme-light {
+  --ig-translucency: 0.55;
+}
+
 body.is-mobile {
   --ig-blur: 12px;
   --ig-float-translucency: 0.7;
@@ -113,14 +117,12 @@ body.is-translucent {
 
 @media (prefers-color-scheme: light) {
   body.is-translucent.theme-dark {
-    --ig-translucency: 0;
-    --workspace-background-translucent: var(--ig-surface-0);
+    --ig-translucency: 0.35;
   }
 }
 @media (prefers-color-scheme: dark) {
   body.is-translucent.theme-light {
-    --ig-translucency: 0;
-    --workspace-background-translucent: var(--ig-surface-0);
+    --ig-translucency: 0.35;
   }
 }
 body:not(.is-translucent) .workspace,
@@ -922,7 +924,7 @@ body.theme-dark {
   background-image: var(--ig-grain);
   opacity: var(--ig-grain-opacity);
   border-radius: inherit;
-  mix-blend-mode: overlay;
+  mix-blend-mode: soft-light;
 }
 
 .modal > *,

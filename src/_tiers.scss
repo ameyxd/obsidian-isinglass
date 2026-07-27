@@ -67,8 +67,22 @@ body {
 
 // --- Tier A: true glass (macOS only) ---------------------------------------
 
+// Light and dark are not symmetric here, so they do not get the same value.
+//
+// In dark mode a dark surface lets bright areas of the backdrop punch through,
+// so glass reads clearly at full strength.
+//
+// In light mode the surface is already white and the light vibrancy material is
+// near-white, so transparency has almost nothing to reveal — it only makes the
+// note *greyer*. Past a point that is a worse trade: a dimmed page in exchange
+// for an effect nobody can see. Light mode therefore runs lower by default, and
+// the Style Settings slider lets anyone who disagrees push it back up.
 body.is-translucent {
   --ig-translucency: 1;
+}
+
+body.is-translucent.theme-light {
+  --ig-translucency: 0.55;
 }
 
 // --- Tier C: mobile ---------------------------------------------------------
@@ -176,17 +190,19 @@ body.is-translucent {
 // When they disagree there is no safe amount of translucency — the backdrop is
 // working against the text — so the window falls back to the opaque tier.
 
+// Scaled down rather than zeroed. Collapsing to fully opaque was visible as a
+// snap: switching Obsidian to dark on a light Mac showed a moment of glass and
+// then slammed shut. 0.35 is the ceiling contrast-check allows for the opposed
+// material, and it keeps the transition continuous.
 @media (prefers-color-scheme: light) {
   body.is-translucent.theme-dark {
-    --ig-translucency: 0;
-    --workspace-background-translucent: var(--ig-surface-0);
+    --ig-translucency: 0.35;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   body.is-translucent.theme-light {
-    --ig-translucency: 0;
-    --workspace-background-translucent: var(--ig-surface-0);
+    --ig-translucency: 0.35;
   }
 }
 

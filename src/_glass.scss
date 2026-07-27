@@ -79,7 +79,9 @@ body.theme-dark {
     background-image: var(--ig-grain);
     opacity: var(--ig-grain-opacity);
     border-radius: inherit;
-    mix-blend-mode: overlay;
+    // soft-light, not overlay: overlay drives a light surface darker, which
+    // works against the whole point of a bright note page.
+    mix-blend-mode: soft-light;
   }
 }
 

@@ -138,11 +138,20 @@ const WALLPAPER = { black: [0, 0, 0], white: [255, 255, 255] };
 const MATERIAL_WEIGHT = 0.6;
 const MATERIAL_TINT = { light: [255, 255, 255], dark: [0, 0, 0] };
 
-function vibrancyBackdrops(modeName) {
-  const tint = MATERIAL_TINT[modeName];
+// `opposite` models the appearance-mismatch case: Obsidian in dark while macOS
+// is light (or vice versa), where the material fights the text instead of
+// supporting it. That case gets its own reduced translucency rather than being
+// forced fully opaque — collapsing it to zero is visible as a jarring snap when
+// the user switches themes.
+function vibrancyBackdrops(modeName, opposite = false) {
+  const tint = MATERIAL_TINT[opposite ? (modeName === 'light' ? 'dark' : 'light') : modeName];
   const out = {};
   for (const [name, paper] of Object.entries(WALLPAPER)) {
-    out[`vibrancy over ${name}`] = composite(tint, MATERIAL_WEIGHT, paper);
+    out[`${opposite ? 'opposed ' : ''}vibrancy over ${name}`] = composite(
+      tint,
+      MATERIAL_WEIGHT,
+      paper
+    );
   }
   return out;
 }
@@ -150,8 +159,14 @@ function vibrancyBackdrops(modeName) {
 // Tiers B and C are opaque at the base levels, so their only translucent
 // surface is L4, which composites over in-app content — bounded by the mode's
 // own darkest and lightest surface.
+// MISMATCH_SCALE must match --ig-translucency in the prefers-color-scheme
+// blocks in _tiers.scss. It is scaled down rather than zeroed so that switching
+// Obsidian's theme does not snap the window from glass to solid.
+const MISMATCH_SCALE = 0.35;
+
 const TIERS = [
   { id: 'A', translucency: 1, float: 1, vibrancy: true },
+  { id: 'A-mismatch', translucency: MISMATCH_SCALE, float: 1, vibrancy: 'opposite' },
   { id: 'B', translucency: 0, float: 1, vibrancy: false },
   { id: 'C', translucency: 0, float: 0.7, vibrancy: false },
 ];
@@ -193,7 +208,7 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     // against the bare wallpaper would model a case that cannot occur, and
     // would force its alpha needlessly high.
     const baseBackdrops = tier.vibrancy
-      ? vibrancyBackdrops(mode.name)
+      ? vibrancyBackdrops(mode.name, tier.vibrancy === 'opposite')
       : {
           'darkest in-app': mode.surface.l0,
           'lightest in-app': mode.surface.l2,
