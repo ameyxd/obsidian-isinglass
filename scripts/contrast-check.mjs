@@ -138,6 +138,35 @@ const WALLPAPER = { black: [0, 0, 0], white: [255, 255, 255] };
 const MATERIAL_WEIGHT = 0.6;
 const MATERIAL_TINT = { light: [255, 255, 255], dark: [0, 0, 0] };
 
+// The theme paints its own backdrop behind the workspace (see _glass.scss), so
+// what a pane actually composites onto is that aurora, not the raw material.
+// Unlike a wallpaper this is *known* — the only free variable is the user's
+// accent hue, which is swept below. That is what allows the panes to be far
+// more translucent than the wallpaper-extremes model permitted: the design no
+// longer has to survive a backdrop it cannot see.
+// Read from the compiled CSS rather than restated here — a second copy of these
+// numbers is exactly the kind of drift that let earlier bugs pass a green build.
+
+// Luminance varies a lot by hue at fixed HSL lightness (yellow reads far
+// brighter than blue), so both extremes are checked.
+function auroraExtremes(modeName, base) {
+  const b = block(`body.theme-${modeName}`);
+  const l = parseFloat(decl(b, '--ig-aurora-l'));
+  const a = parseFloat(decl(b, '--ig-aurora-a'));
+  if (Number.isNaN(l) || Number.isNaN(a)) {
+    throw new Error(`contrast-check: missing --ig-aurora-* for theme-${modeName}`);
+  }
+  let lo = null;
+  let hi = null;
+  for (let h = 0; h < 360; h += 15) {
+    const c = composite(hslToRgb(h, 70, l), a, base);
+    const lum = relativeLuminance(c);
+    if (lo === null || lum < lo.lum) lo = { c, lum };
+    if (hi === null || lum > hi.lum) hi = { c, lum };
+  }
+  return { 'aurora (darkest hue)': lo.c, 'aurora (brightest hue)': hi.c };
+}
+
 // `opposite` models the appearance-mismatch case: Obsidian in dark while macOS
 // is light (or vice versa), where the material fights the text instead of
 // supporting it. That case gets its own reduced translucency rather than being
@@ -207,12 +236,18 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     // so its true backdrop is an already-composited base surface. Checking L4
     // against the bare wallpaper would model a case that cannot occur, and
     // would force its alpha needlessly high.
-    const baseBackdrops = tier.vibrancy
+    // The real stack under a pane is: substrate (the OS material, or an opaque
+    // window on platforms without one) → the theme's aurora → the pane itself.
+    const substrates = tier.vibrancy
       ? vibrancyBackdrops(mode.name, tier.vibrancy === 'opposite')
-      : {
-          'darkest in-app': mode.surface.l0,
-          'lightest in-app': mode.surface.l2,
-        };
+      : { 'opaque base': mode.surface.l0 };
+
+    const baseBackdrops = {};
+    for (const [subName, sub] of Object.entries(substrates)) {
+      for (const [auroraName, colour] of Object.entries(auroraExtremes(mode.name, sub))) {
+        baseBackdrops[`${auroraName} on ${subName}`] = colour;
+      }
+    }
 
     const composited = (lvl, bg) =>
       alpha[lvl] >= 0.999 ? mode.surface[lvl] : composite(mode.surface[lvl], alpha[lvl], bg);

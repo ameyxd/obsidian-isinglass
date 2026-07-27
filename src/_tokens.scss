@@ -86,7 +86,7 @@ body.theme-light {
   // tier A. Lightening either one fails contrast-check.
   --ig-text-normal: hsl(220 15% 17%);
   --ig-text-muted: hsl(220 12% 32%);
-  --ig-text-faint: hsl(220 10% 44%);
+  --ig-text-faint: hsl(220 10% 41%);
   --ig-text-on-accent: hsl(0 0% 100%);
 
   --ig-border: hsl(220 15% 84%);
@@ -121,8 +121,8 @@ body.theme-dark {
   // The mirror of the light-mode constraint: these clear AA against an L0/L1
   // surface composited over a *white* wallpaper in tier A.
   --ig-text-normal: hsl(220 15% 92%);
-  --ig-text-muted: hsl(220 12% 72%);
-  --ig-text-faint: hsl(220 10% 58%);
+  --ig-text-muted: hsl(220 12% 75%);
+  --ig-text-faint: hsl(220 10% 62%);
   --ig-text-on-accent: hsl(220 20% 10%);
 
   --ig-border: hsl(220 12% 26%);

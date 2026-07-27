@@ -68,9 +68,9 @@ body {
   // its binding constraint and its value is a design choice: glassy enough to
   // read as glass, opaque enough that blurred text underneath does not compete
   // with the palette's own labels.
-  --ig-a-l0: calc(1 - 0.45 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.42 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.38 * var(--ig-translucency));
+  --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency));
+  --ig-a-l1: calc(1 - 0.6 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.54 * var(--ig-translucency));
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
 }
 
