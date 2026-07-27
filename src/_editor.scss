@@ -1,201 +1,17 @@
-body {
-  --ig-radius-sm: 6px;
-  --ig-radius-md: 10px;
-  --ig-radius-lg: 14px;
-  --ig-radius-xl: 20px;
-  --ig-space-1: 4px;
-  --ig-space-2: 8px;
-  --ig-space-3: 12px;
-  --ig-space-4: 16px;
-  --ig-space-5: 24px;
-  --ig-space-6: 32px;
-  --ig-ease: cubic-bezier(0.32, 0.72, 0, 1);
-  --ig-duration-fast: 100ms;
-  --ig-duration: 160ms;
-  --ig-blur: 20px;
-  --ig-blur-saturate: 180%;
-  --ig-opacity-floor: 0.82;
-  --ig-hairline: 0.5px;
-}
+// ---------------------------------------------------------------------------
+// Editor and reading view
+// ---------------------------------------------------------------------------
+// Everything here targets both the live-preview editor (.markdown-source-view)
+// and the rendered reading view (.markdown-rendered), because a theme that
+// styles only one of them looks broken the moment a user switches modes.
+//
+// Raised elements — code, callouts, tables, embeds — sit at L3, which is opaque
+// in every tier. Body text never sits directly on a translucent surface.
+// ---------------------------------------------------------------------------
 
-body.theme-light {
-  --ig-h: 220;
-  --ig-s: 16%;
-  --ig-l0-l: 95.5%;
-  --ig-l1-l: 97%;
-  --ig-l2-l: 99.5%;
-  --ig-l3-l: 97.5%;
-  --ig-l4-l: 98.5%;
-  --ig-text-normal: hsl(220 15% 17%);
-  --ig-text-muted: hsl(220 12% 32%);
-  --ig-text-faint: hsl(220 10% 44%);
-  --ig-text-on-accent: hsl(0 0% 100%);
-  --ig-border: hsl(220 15% 87%);
-  --ig-border-strong: hsl(220 15% 78%);
-  --ig-shadow-sm: 0 1px 2px hsl(220 20% 20% / 0.06);
-  --ig-shadow-md: 0 4px 12px hsl(220 20% 20% / 0.08);
-  --ig-shadow-lg: 0 12px 32px hsl(220 20% 20% / 0.12);
-  --ig-glass-tint: 255, 255, 255;
-}
-
-body.theme-dark {
-  --ig-h: 220;
-  --ig-s: 13%;
-  --ig-l0-l: 9%;
-  --ig-l1-l: 11%;
-  --ig-l2-l: 13.5%;
-  --ig-l3-l: 17%;
-  --ig-l4-l: 18.5%;
-  --ig-text-normal: hsl(220 15% 92%);
-  --ig-text-muted: hsl(220 12% 72%);
-  --ig-text-faint: hsl(220 10% 58%);
-  --ig-text-on-accent: hsl(220 20% 10%);
-  --ig-border: hsl(220 12% 22%);
-  --ig-border-strong: hsl(220 12% 32%);
-  --ig-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
-  --ig-shadow-md: 0 4px 12px hsl(0 0% 0% / 0.32);
-  --ig-shadow-lg: 0 12px 32px hsl(0 0% 0% / 0.44);
-  --ig-glass-tint: 0, 0, 0;
-}
-
-body {
-  --ig-surface-0: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l) / var(--ig-a-l0));
-  --ig-surface-1: hsl(var(--ig-h) var(--ig-s) var(--ig-l1-l) / var(--ig-a-l1));
-  --ig-surface-2: hsl(var(--ig-h) var(--ig-s) var(--ig-l2-l) / var(--ig-a-l2));
-  --ig-surface-3: hsl(var(--ig-h) var(--ig-s) var(--ig-l3-l) / 1);
-  --ig-surface-4: hsl(var(--ig-h) var(--ig-s) var(--ig-l4-l) / var(--ig-a-l4));
-}
-
-body {
-  --ig-translucency: 0;
-  --ig-float-translucency: 1;
-  --ig-a-l0: calc(1 - 0.12 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.1 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.08 * var(--ig-translucency));
-  --ig-a-l4: calc(1 - 0.1 * var(--ig-float-translucency));
-}
-
-body.is-translucent {
-  --ig-translucency: 1;
-}
-
-body.is-mobile {
-  --ig-blur: 12px;
-  --ig-float-translucency: 0.7;
-}
-
-body {
-  --background-primary: var(--ig-surface-2);
-  --background-primary-alt: var(--ig-surface-3);
-  --background-secondary: var(--ig-surface-1);
-  --background-secondary-alt: var(--ig-surface-0);
-  --background-modifier-border: var(--ig-border);
-  --background-modifier-border-hover: var(--ig-border-strong);
-  --background-modifier-border-focus: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
-  --text-normal: var(--ig-text-normal);
-  --text-muted: var(--ig-text-muted);
-  --text-faint: var(--ig-text-faint);
-  --text-on-accent: var(--ig-text-on-accent);
-  --divider-color: var(--ig-border);
-  --titlebar-background: transparent;
-  --titlebar-background-focused: transparent;
-  --radius-s: var(--ig-radius-sm);
-  --radius-m: var(--ig-radius-md);
-  --radius-l: var(--ig-radius-lg);
-  --radius-xl: var(--ig-radius-xl);
-  --shadow-s: var(--ig-shadow-sm);
-  --shadow-l: var(--ig-shadow-lg);
-}
-
-.workspace,
-.horizontal-main-container,
-.workspace-split.mod-root {
-  background-color: var(--ig-surface-0);
-}
-
-body {
-  --font-text-theme: ui-serif, 'New York', Charter, 'Bitstream Charter', 'Iowan Old Style',
-    Georgia, Cambria, serif;
-  --font-interface-theme: -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Text', 'Segoe UI',
-    Inter, system-ui, sans-serif;
-  --font-monospace-theme: ui-monospace, 'SF Mono', SFMono-Regular, 'JetBrains Mono',
-    'Cascadia Code', Menlo, Consolas, monospace;
-  --file-line-width: 40rem;
-  --line-height-normal: 1.6;
-  --line-height-tight: 1.3;
-  --ig-tracking-display: -0.022em;
-  --ig-tracking-title: -0.018em;
-  --ig-tracking-heading: -0.012em;
-  --ig-weight-heading: 600;
-  --ig-weight-strong: 640;
-  --bold-weight: var(--ig-weight-strong);
-}
-
-body {
-  --h1-size: 1.9em;
-  --h2-size: 1.5em;
-  --h3-size: 1.25em;
-  --h4-size: 1.1em;
-  --h5-size: 1em;
-  --h6-size: 0.9em;
-  --h1-weight: var(--ig-weight-heading);
-  --h2-weight: var(--ig-weight-heading);
-  --h3-weight: var(--ig-weight-heading);
-  --h4-weight: 600;
-  --h5-weight: 600;
-  --h6-weight: 600;
-  --h1-line-height: var(--line-height-tight);
-  --h2-line-height: var(--line-height-tight);
-  --h3-line-height: 1.35;
-  --h1-color: var(--ig-text-normal);
-  --h2-color: var(--ig-text-normal);
-  --h3-color: var(--ig-text-normal);
-  --h4-color: var(--ig-text-normal);
-  --h5-color: var(--ig-text-normal);
-  --h6-color: var(--ig-text-muted);
-}
-
-.markdown-rendered h1,
-.markdown-source-view.mod-cm6 .HyperMD-header-1 {
-  letter-spacing: var(--ig-tracking-display);
-}
-
-.markdown-rendered h2,
-.markdown-source-view.mod-cm6 .HyperMD-header-2 {
-  letter-spacing: var(--ig-tracking-title);
-}
-
-.markdown-rendered h3,
-.markdown-rendered h4,
-.markdown-source-view.mod-cm6 .HyperMD-header-3,
-.markdown-source-view.mod-cm6 .HyperMD-header-4 {
-  letter-spacing: var(--ig-tracking-heading);
-}
-
-.markdown-rendered h6,
-.markdown-source-view.mod-cm6 .HyperMD-header-6 {
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.markdown-preview-view,
-.markdown-source-view.mod-cm6 .cm-content {
-  line-height: var(--line-height-normal);
-}
-
-.markdown-rendered code,
-.markdown-rendered kbd {
-  font-variant-ligatures: none;
-}
-
-.markdown-rendered table {
-  font-variant-numeric: tabular-nums;
-}
-
-.metadata-container,
-.metadata-property-key {
-  font-family: var(--font-interface-theme);
-}
+// --- Rhythm -----------------------------------------------------------------
+// Space above a heading is larger than space between paragraphs, so structure
+// comes from rhythm rather than from weight.
 
 .markdown-rendered h1,
 .markdown-rendered h2,
@@ -216,33 +32,43 @@ body {
   margin-block: 0 var(--ig-space-4);
 }
 
+// --- Rules ------------------------------------------------------------------
+
 .markdown-rendered hr {
   border: none;
   border-top: var(--ig-hairline) solid var(--ig-border);
   margin-block: var(--ig-space-6);
 }
 
+// --- Links ------------------------------------------------------------------
+// A tinted underline rather than a full-strength one: present, but it does not
+// stripe the paragraph.
+
 .markdown-rendered a,
 .cm-s-obsidian .cm-link,
 .cm-s-obsidian .cm-hmd-internal-link {
   --link-decoration: none;
   --link-decoration-hover: none;
+
   color: var(--link-color);
-  border-bottom: 1px solid hsl(var(--accent-h), var(--accent-s), var(--accent-l), 0.35);
+  border-bottom: 1px solid hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.35);
   transition: border-color var(--ig-duration) var(--ig-ease);
 }
 
 .markdown-rendered a:hover,
 .cm-s-obsidian .cm-link:hover,
 .cm-s-obsidian .cm-hmd-internal-link:hover {
-  border-bottom-color: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+  border-bottom-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
 }
 
+// Unresolved links read as absence, not as error.
 .markdown-rendered a.is-unresolved {
   color: var(--ig-text-faint);
   border-bottom-style: dashed;
   border-bottom-color: var(--ig-border-strong);
 }
+
+// --- Inline code and keys ---------------------------------------------------
 
 body {
   --code-background: var(--ig-surface-3);
@@ -265,6 +91,8 @@ body {
   font-size: 0.85em;
 }
 
+// --- Code blocks ------------------------------------------------------------
+
 .markdown-rendered pre,
 .markdown-source-view.mod-cm6 .HyperMD-codeblock-bg {
   background-color: var(--ig-surface-3);
@@ -282,6 +110,7 @@ body {
   background: none;
 }
 
+// The copy button should be invisible until wanted.
 .markdown-rendered .copy-code-button {
   border-radius: var(--ig-radius-sm);
   border: var(--ig-hairline) solid var(--ig-border);
@@ -295,6 +124,10 @@ body {
   opacity: 1;
 }
 
+// --- Blockquotes ------------------------------------------------------------
+// A hairline rule and a colour shift, no background fill — a filled quote on a
+// translucent page reads as a callout the author did not ask for.
+
 .markdown-rendered blockquote {
   margin-inline: 0;
   padding-inline-start: var(--ig-space-4);
@@ -302,6 +135,8 @@ body {
   color: var(--ig-text-muted);
   font-style: normal;
 }
+
+// --- Lists ------------------------------------------------------------------
 
 body {
   --list-marker-color: var(--ig-text-faint);
@@ -317,21 +152,32 @@ body {
   margin-block: 0.15em;
 }
 
-.markdown-rendered input[type=checkbox] {
+// Task checkboxes: circular, accent-filled when done, and the completed line
+// recedes rather than striking through.
+.markdown-rendered input[type='checkbox'] {
   border-radius: 50%;
   border: 1.5px solid var(--ig-border-strong);
-  transition: background-color var(--ig-duration-fast) var(--ig-ease), border-color var(--ig-duration-fast) var(--ig-ease);
+  transition:
+    background-color var(--ig-duration-fast) var(--ig-ease),
+    border-color var(--ig-duration-fast) var(--ig-ease);
 }
 
-.markdown-rendered input[type=checkbox]:checked {
-  border-color: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
-  background-color: hsl(var(--accent-h), var(--accent-s), var(--accent-l));
+.markdown-rendered input[type='checkbox']:checked {
+  border-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
 }
 
+// Obsidian exposes these two for completed tasks, and they cover live preview
+// and reading view together — styling .task-list-item alone misses the editor.
+// A completed task should recede, not be crossed out.
 body {
   --checklist-done-decoration: none;
   --checklist-done-color: var(--ig-text-muted);
 }
+
+// --- Tables -----------------------------------------------------------------
+// Horizontal hairlines only. Vertical rules turn a table into a grid, which is
+// heavier than the rest of the design.
 
 body {
   --table-border-width: var(--ig-hairline);
@@ -371,9 +217,15 @@ body {
   background-color: var(--ig-surface-3);
 }
 
+// --- Callouts ---------------------------------------------------------------
+// Obsidian derives every callout's colour from --callout-color (an "r, g, b"
+// triple it sets per type), so tinting the surface once here covers all of
+// them, including types this theme has never heard of.
+
 .markdown-rendered .callout {
   --callout-padding: var(--ig-space-3) var(--ig-space-4);
   --callout-radius: var(--ig-radius-md);
+
   background-color: rgba(var(--callout-color), 0.06);
   border: var(--ig-hairline) solid rgba(var(--callout-color), 0.22);
   box-shadow: none;
@@ -391,9 +243,12 @@ body {
   margin-block-end: 0;
 }
 
+// A nested callout steps up rather than repeating the same tint.
 .markdown-rendered .callout .callout {
   background-color: rgba(var(--callout-color), 0.1);
 }
+
+// --- Tags -------------------------------------------------------------------
 
 body {
   --tag-background: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.1);
@@ -406,6 +261,9 @@ body {
   --tag-size: 0.85em;
 }
 
+// --- Highlight --------------------------------------------------------------
+// Obsidian's default highlight is a saturated yellow that fights every palette.
+
 body {
   --text-highlight-bg: hsl(48 90% 60% / 0.28);
 }
@@ -413,6 +271,8 @@ body {
 body.theme-dark {
   --text-highlight-bg: hsl(48 90% 55% / 0.24);
 }
+
+// --- Embeds -----------------------------------------------------------------
 
 .markdown-rendered .internal-embed .markdown-embed {
   border-inline-start: 2px solid var(--ig-border-strong);
@@ -427,10 +287,13 @@ body.theme-dark {
   color: var(--ig-text-muted);
 }
 
+// Images get the same corner treatment as every other raised element.
 .markdown-rendered img,
 .markdown-rendered video {
   border-radius: var(--ig-radius-md);
 }
+
+// --- Footnotes --------------------------------------------------------------
 
 .markdown-rendered .footnote-backref,
 .markdown-rendered sup.footnote-ref {
@@ -445,6 +308,10 @@ body.theme-dark {
   margin-block-start: var(--ig-space-6);
   padding-block-start: var(--ig-space-3);
 }
+
+// --- Properties -------------------------------------------------------------
+// Metadata is scaffolding for the note, not part of it: quieter than the body,
+// separated by a hairline rather than a filled panel.
 
 .metadata-container {
   border: none;
@@ -468,6 +335,8 @@ body.theme-dark {
 .metadata-add-button {
   color: var(--ig-text-faint);
 }
+
+// --- Inline title -----------------------------------------------------------
 
 .inline-title {
   font-weight: var(--ig-weight-heading);
