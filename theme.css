@@ -69,9 +69,9 @@ body {
 body {
   --ig-translucency: 0;
   --ig-float-translucency: 1;
-  --ig-a-l0: calc(1 - 0.4 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.34 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.3 * var(--ig-translucency));
+  --ig-a-l0: calc(1 - 0.45 * var(--ig-translucency));
+  --ig-a-l1: calc(1 - 0.42 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.38 * var(--ig-translucency));
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
 }
 

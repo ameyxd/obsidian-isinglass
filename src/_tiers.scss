@@ -51,16 +51,17 @@ body {
   // L0-L2 sit against the macOS vibrancy material in tier A. contrast-check
   // models that material rather than a raw wallpaper (see its header), which is
   // what makes these numbers viable: an earlier, wrong model capped L0 at 0.12
-  // and made the theme look flat. Max passing is L0 0.45; these sit one step
-  // below for headroom.
+  // and made the theme look flat. These are AT the ceiling — 0.48/0.45/0.42
+  // fails — because on macOS 26 the vibrancy material washes out far more than
+  // expected, so anything below the ceiling reads as barely translucent.
   //
   // L4 is different — it always composites over app content, so contrast is not
   // its binding constraint and its value is a design choice: glassy enough to
   // read as glass, opaque enough that blurred text underneath does not compete
   // with the palette's own labels.
-  --ig-a-l0: calc(1 - 0.4 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.34 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.3 * var(--ig-translucency));
+  --ig-a-l0: calc(1 - 0.45 * var(--ig-translucency));
+  --ig-a-l1: calc(1 - 0.42 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.38 * var(--ig-translucency));
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
 }
 
