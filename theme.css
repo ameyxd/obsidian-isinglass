@@ -71,7 +71,7 @@ body {
   --ig-float-translucency: 1;
   --ig-a-l0: calc(1 - 0.4 * var(--ig-translucency));
   --ig-a-l1: calc(1 - 0.34 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.18 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.3 * var(--ig-translucency));
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
 }
 
@@ -108,9 +108,21 @@ body {
 }
 
 body.is-translucent {
-  --workspace-background-translucent: var(--ig-surface-0);
+  --workspace-background-translucent: transparent;
 }
 
+@media (prefers-color-scheme: light) {
+  body.is-translucent.theme-dark {
+    --ig-translucency: 0;
+    --workspace-background-translucent: var(--ig-surface-0);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  body.is-translucent.theme-light {
+    --ig-translucency: 0;
+    --workspace-background-translucent: var(--ig-surface-0);
+  }
+}
 body:not(.is-translucent) .workspace,
 body:not(.is-translucent) .horizontal-main-container,
 body:not(.is-translucent) .workspace-split.mod-root {

@@ -60,7 +60,7 @@ body {
   // with the palette's own labels.
   --ig-a-l0: calc(1 - 0.4 * var(--ig-translucency));
   --ig-a-l1: calc(1 - 0.34 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.18 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.3 * var(--ig-translucency));
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
 }
 
@@ -140,9 +140,47 @@ body {
 // Note also `:not(.is-fullscreen)`: Obsidian disables translucency outright in
 // fullscreen. Nothing a theme can do about that.
 
-// Tier A: hand the glass to Obsidian's own variable and stay out of the way.
+// Tier A: the vibrancy material IS the backdrop. Leave it bare.
+//
+// Painting L0 here as well was a real bug. Two translucent layers multiply:
+// an L0 at 0.60 under a note surface at 0.70 leaves the note ~88% effectively
+// opaque, not 70% — which is why the window looked solid despite every value
+// saying otherwise. It also silently invalidated contrast-check, which models
+// each surface against the vibrancy *directly* and had no idea a second layer
+// sat in between.
+//
+// macOS does not stack either: a window gets one vibrancy layer and each
+// surface sits straight on it. So chrome (which Obsidian forces transparent)
+// shows the material at full strength, and the note surface carries the only
+// alpha in the stack — matching what the checker verifies.
 body.is-translucent {
-  --workspace-background-translucent: var(--ig-surface-0);
+  --workspace-background-translucent: transparent;
+}
+
+// --- Appearance mismatch ----------------------------------------------------
+// The vibrancy material follows the **macOS system appearance**, not Obsidian's
+// theme setting. Someone running system Light with Obsidian in dark mode gets a
+// light material behind light-on-dark text, and the sidebar becomes unreadable.
+// This is not hypothetical — it is the default state for anyone who keeps macOS
+// light and Obsidian dark, which is a very common pairing.
+//
+// `prefers-color-scheme` reports the *system* appearance while `.theme-dark` /
+// `.theme-light` report Obsidian's, so the mismatch is detectable in pure CSS.
+// When they disagree there is no safe amount of translucency — the backdrop is
+// working against the text — so the window falls back to the opaque tier.
+
+@media (prefers-color-scheme: light) {
+  body.is-translucent.theme-dark {
+    --ig-translucency: 0;
+    --workspace-background-translucent: var(--ig-surface-0);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body.is-translucent.theme-light {
+    --ig-translucency: 0;
+    --workspace-background-translucent: var(--ig-surface-0);
+  }
 }
 
 // Tiers B and C: no glass layer exists, so the backdrop is painted normally.
