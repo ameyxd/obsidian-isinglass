@@ -1,0 +1,134 @@
+// ---------------------------------------------------------------------------
+// The glass material
+// ---------------------------------------------------------------------------
+// Transparency is not glass. A pane you can faintly see through reads as a
+// tint; what makes a surface read as *glass* is its edges and its texture:
+//
+//   1. a specular highlight where light catches the top edge
+//   2. a frosted rather than clear body
+//   3. fine grain, so it looks like a material and not a filter
+//   4. a slightly brighter border than the surrounding surface
+//
+// macOS 26's vibrancy material supplies none of these — it is flat, and after
+// the chrome is already at zero opacity there is nothing more to win from the
+// OS. So the material is built here instead, which has the useful side effect
+// of working identically on Windows and iOS, where there is no vibrancy at all.
+// ---------------------------------------------------------------------------
+
+body {
+  // Specular edge. Light mode catches a white highlight; dark mode a dimmer one,
+  // because a bright edge on a dark surface reads as plastic if overdone.
+  --ig-glass-highlight: rgba(255, 255, 255, 0.55);
+  --ig-glass-highlight-soft: rgba(255, 255, 255, 0.22);
+
+  // Grain. A single tiled SVG turbulence, inlined so the theme stays one file
+  // and needs no network or asset directory.
+  --ig-grain-opacity: 0.035;
+  --ig-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+body.theme-dark {
+  --ig-glass-highlight: rgba(255, 255, 255, 0.14);
+  --ig-glass-highlight-soft: rgba(255, 255, 255, 0.06);
+
+  // Grain is more visible against dark surfaces, so it needs less of it.
+  --ig-grain-opacity: 0.022;
+}
+
+// --- Specular edge ----------------------------------------------------------
+// A one-pixel inset highlight along the top of every raised or floating
+// surface. This is the single detail that does the most work: it is what makes
+// an edge look like the lit rim of a pane rather than a drawn border.
+
+@mixin specular-edge {
+  box-shadow:
+    inset 0 1px 0 0 var(--ig-glass-highlight),
+    var(--ig-shadow-lg);
+}
+
+.modal,
+.prompt,
+.suggestion-container,
+.menu,
+.popover.hover-popover {
+  @include specular-edge;
+}
+
+// Raised elements get the softer version — a full specular edge on every code
+// block would turn the page into a stack of trays.
+.markdown-rendered pre,
+.markdown-rendered .callout,
+.canvas-node .canvas-node-container {
+  box-shadow: inset 0 1px 0 0 var(--ig-glass-highlight-soft);
+}
+
+// --- Grain ------------------------------------------------------------------
+// Applied via ::after so it overlays the surface without affecting its own
+// background, and pointer-events:none so it never intercepts a click.
+// `contain: strict` keeps it from forcing layout work on the parent.
+
+@mixin grain {
+  position: relative;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: var(--ig-grain);
+    opacity: var(--ig-grain-opacity);
+    border-radius: inherit;
+    mix-blend-mode: overlay;
+  }
+}
+
+.modal,
+.prompt,
+.suggestion-container,
+.popover.hover-popover {
+  @include grain;
+}
+
+// Keep the grain behind the content it textures.
+.modal > *,
+.prompt > *,
+.suggestion-container > * {
+  position: relative;
+  z-index: 1;
+}
+
+// --- Frosting the note surface ----------------------------------------------
+// Tier A only. On Windows and iOS the base surfaces are opaque, so a blur here
+// would cost paint time and render nothing; the glass identity on those
+// platforms comes from the floating layers instead.
+//
+// The blur is what turns "slightly see-through" into "frosted". Without it the
+// desktop shows through sharply at low opacity, which is exactly the faint,
+// filtered look this is meant to replace.
+
+body.is-translucent:not(.is-mobile) {
+  .workspace-leaf-content {
+    -webkit-backdrop-filter: blur(var(--ig-frost));
+    backdrop-filter: blur(var(--ig-frost));
+  }
+}
+
+body {
+  --ig-frost: 30px;
+}
+
+// --- Edge lighting on the panes ---------------------------------------------
+// Sidebars and the note pane get a hairline of light along their leading edge
+// in tier A, so the panes read as separate sheets of glass rather than one
+// continuous translucent field.
+
+body.is-translucent {
+  .workspace-split.mod-left-split {
+    border-inline-end: 1px solid var(--ig-glass-highlight-soft);
+  }
+
+  .workspace-split.mod-right-split {
+    border-inline-start: 1px solid var(--ig-glass-highlight-soft);
+  }
+}
