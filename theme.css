@@ -111,16 +111,6 @@ body.is-translucent {
   --workspace-background-translucent: transparent;
 }
 
-body.is-translucent .workspace-leaf-content,
-body.is-translucent .workspace-tabs {
-  -webkit-backdrop-filter: saturate(var(--ig-material-saturate));
-  backdrop-filter: saturate(var(--ig-material-saturate));
-}
-
-body {
-  --ig-material-saturate: 200%;
-}
-
 @media (prefers-color-scheme: light) {
   body.is-translucent.theme-dark {
     --ig-translucency: 0;
