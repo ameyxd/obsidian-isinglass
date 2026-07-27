@@ -52,7 +52,10 @@ body {
   --ig-opacity-floor: 0.82;
 
   // Hairline separators read better than 1px borders on glass.
-  --ig-hairline: 0.5px;
+  // 1px, not 0.5px. A half-pixel hairline is crisp on a Retina Mac and rounds
+  // away to nothing on the non-Retina displays plenty of Windows users have.
+  // Delicacy comes from the border *colour*, which survives rounding.
+  --ig-hairline: 1px;
 }
 
 // ---------------------------------------------------------------------------
@@ -65,12 +68,18 @@ body.theme-light {
   --ig-h: 220;
   --ig-s: 16%;
 
-  // Surface lightness, L0 (deepest) → L4 (highest)
-  --ig-l0-l: 95.5%;
-  --ig-l1-l: 97%;
-  --ig-l2-l: 99.5%;
-  --ig-l3-l: 97.5%;
-  --ig-l4-l: 98.5%;
+  // Surface lightness, L0 (deepest) → L4 (highest).
+  //
+  // The steps are wide on purpose. Contrast caps base translucency near 10–12%,
+  // so very little wallpaper actually comes through — which means depth cannot
+  // come from transparency. It comes from the ladder instead: ~3.5 points from
+  // workspace to sidebar and ~4.5 from sidebar to note, so the interface reads
+  // as stacked sheets whether or not anything shows through them.
+  --ig-l0-l: 92%;
+  --ig-l1-l: 95.5%;
+  --ig-l2-l: 100%;
+  --ig-l3-l: 97%;
+  --ig-l4-l: 98%;
 
   // Text. `muted` and `faint` sit darker than convention because they have to
   // clear AA against an L0/L1 surface composited over a *black* wallpaper in
@@ -80,8 +89,8 @@ body.theme-light {
   --ig-text-faint: hsl(220 10% 44%);
   --ig-text-on-accent: hsl(0 0% 100%);
 
-  --ig-border: hsl(220 15% 87%);
-  --ig-border-strong: hsl(220 15% 78%);
+  --ig-border: hsl(220 15% 84%);
+  --ig-border-strong: hsl(220 15% 74%);
 
   // Shadows are soft and low-contrast; on glass a heavy shadow reads as dirt.
   --ig-shadow-sm: 0 1px 2px hsl(220 20% 20% / 0.06);
@@ -100,11 +109,14 @@ body.theme-dark {
   --ig-h: 220;
   --ig-s: 13%;
 
-  --ig-l0-l: 9%;
-  --ig-l1-l: 11%;
-  --ig-l2-l: 13.5%;
-  --ig-l3-l: 17%;
-  --ig-l4-l: 18.5%;
+  // Mirrors the light-mode ladder: ~3.5 points workspace → sidebar, ~4.5
+  // sidebar → note. Dark mode needs this more, not less — luminance differences
+  // are harder to see at the bottom of the range.
+  --ig-l0-l: 7%;
+  --ig-l1-l: 10.5%;
+  --ig-l2-l: 15%;
+  --ig-l3-l: 19%;
+  --ig-l4-l: 21%;
 
   // The mirror of the light-mode constraint: these clear AA against an L0/L1
   // surface composited over a *white* wallpaper in tier A.
@@ -113,8 +125,8 @@ body.theme-dark {
   --ig-text-faint: hsl(220 10% 58%);
   --ig-text-on-accent: hsl(220 20% 10%);
 
-  --ig-border: hsl(220 12% 22%);
-  --ig-border-strong: hsl(220 12% 32%);
+  --ig-border: hsl(220 12% 26%);
+  --ig-border-strong: hsl(220 12% 36%);
 
   --ig-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
   --ig-shadow-md: 0 4px 12px hsl(0 0% 0% / 0.32);

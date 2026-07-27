@@ -15,23 +15,23 @@ body {
   --ig-blur: 20px;
   --ig-blur-saturate: 180%;
   --ig-opacity-floor: 0.82;
-  --ig-hairline: 0.5px;
+  --ig-hairline: 1px;
 }
 
 body.theme-light {
   --ig-h: 220;
   --ig-s: 16%;
-  --ig-l0-l: 95.5%;
-  --ig-l1-l: 97%;
-  --ig-l2-l: 99.5%;
-  --ig-l3-l: 97.5%;
-  --ig-l4-l: 98.5%;
+  --ig-l0-l: 92%;
+  --ig-l1-l: 95.5%;
+  --ig-l2-l: 100%;
+  --ig-l3-l: 97%;
+  --ig-l4-l: 98%;
   --ig-text-normal: hsl(220 15% 17%);
   --ig-text-muted: hsl(220 12% 32%);
   --ig-text-faint: hsl(220 10% 44%);
   --ig-text-on-accent: hsl(0 0% 100%);
-  --ig-border: hsl(220 15% 87%);
-  --ig-border-strong: hsl(220 15% 78%);
+  --ig-border: hsl(220 15% 84%);
+  --ig-border-strong: hsl(220 15% 74%);
   --ig-shadow-sm: 0 1px 2px hsl(220 20% 20% / 0.06);
   --ig-shadow-md: 0 4px 12px hsl(220 20% 20% / 0.08);
   --ig-shadow-lg: 0 12px 32px hsl(220 20% 20% / 0.12);
@@ -41,17 +41,17 @@ body.theme-light {
 body.theme-dark {
   --ig-h: 220;
   --ig-s: 13%;
-  --ig-l0-l: 9%;
-  --ig-l1-l: 11%;
-  --ig-l2-l: 13.5%;
-  --ig-l3-l: 17%;
-  --ig-l4-l: 18.5%;
+  --ig-l0-l: 7%;
+  --ig-l1-l: 10.5%;
+  --ig-l2-l: 15%;
+  --ig-l3-l: 19%;
+  --ig-l4-l: 21%;
   --ig-text-normal: hsl(220 15% 92%);
   --ig-text-muted: hsl(220 12% 72%);
   --ig-text-faint: hsl(220 10% 58%);
   --ig-text-on-accent: hsl(220 20% 10%);
-  --ig-border: hsl(220 12% 22%);
-  --ig-border-strong: hsl(220 12% 32%);
+  --ig-border: hsl(220 12% 26%);
+  --ig-border-strong: hsl(220 12% 36%);
   --ig-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
   --ig-shadow-md: 0 4px 12px hsl(0 0% 0% / 0.32);
   --ig-shadow-lg: 0 12px 32px hsl(0 0% 0% / 0.44);
