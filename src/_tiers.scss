@@ -158,6 +158,29 @@ body.is-translucent {
   --workspace-background-translucent: transparent;
 }
 
+// --- Amplifying the material ------------------------------------------------
+// macOS 26's vibrancy material is far flatter than the pre-26 one: it samples
+// what is behind the window but returns a washed, low-saturation result. With
+// the chrome already at zero opacity there is nothing left to give by removing
+// more surface — measured via the CLI, `.app-container` computes to
+// rgba(0, 0, 0, 0), i.e. fully transparent, and it still reads as flat.
+//
+// What is left is to amplify rather than reveal. Saturating the backdrop pulls
+// the colour back out of the material, which is what makes it read as glass
+// instead of grey. This is the same trick the OS uses inside its own materials.
+//
+// Cost is bounded: tier A is desktop-macOS only, so this never runs on mobile,
+// where backdrop-filter on a scrolled surface would be expensive.
+body.is-translucent .workspace-leaf-content,
+body.is-translucent .workspace-tabs {
+  -webkit-backdrop-filter: saturate(var(--ig-material-saturate));
+  backdrop-filter: saturate(var(--ig-material-saturate));
+}
+
+body {
+  --ig-material-saturate: 200%;
+}
+
 // --- Appearance mismatch ----------------------------------------------------
 // The vibrancy material follows the **macOS system appearance**, not Obsidian's
 // theme setting. Someone running system Light with Obsidian in dark mode gets a
