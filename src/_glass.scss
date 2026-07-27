@@ -100,24 +100,64 @@ body.theme-dark {
   z-index: 1;
 }
 
-// --- Frosting the note surface ----------------------------------------------
-// Tier A only. On Windows and iOS the base surfaces are opaque, so a blur here
-// would cost paint time and render nothing; the glass identity on those
-// platforms comes from the floating layers instead.
+// --- The backdrop we own ----------------------------------------------------
+// Verified on macOS 26: `setVibrancy` renders a *static* material. Dragging the
+// window across the desktop changes nothing behind it. So CSS alpha on a base
+// surface reveals a fixed grey wash — it dims the interface and shows nothing,
+// which is why more transparency kept making things worse rather than glassier.
 //
-// The blur is what turns "slightly see-through" into "frosted". Without it the
-// desktop shows through sharply at low opacity, which is exactly the faint,
-// filtered look this is meant to replace.
+// Glass needs something behind it to refract. Rather than depend on an OS
+// feature that no longer delivers, the theme supplies its own backdrop: a very
+// soft, low-contrast field derived from the user's accent hue, painted behind
+// the whole workspace. The panes then frost over *that*.
+//
+// The payoff is that this behaves identically on macOS, Windows, and iOS — the
+// glass identity stops being a macOS-only effect that degrades everywhere else.
 
-body.is-translucent:not(.is-mobile) {
-  .workspace-leaf-content {
-    -webkit-backdrop-filter: blur(var(--ig-frost));
-    backdrop-filter: blur(var(--ig-frost));
+.workspace::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      120% 90% at 15% 0%,
+      hsl(var(--accent-h) 70% var(--ig-aurora-l) / var(--ig-aurora-a)) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      100% 80% at 85% 100%,
+      hsl(calc(var(--accent-h) + 60) 60% var(--ig-aurora-l) / var(--ig-aurora-a)) 0%,
+      transparent 55%
+    );
+}
+
+body.theme-light {
+  --ig-aurora-l: 70%;
+  --ig-aurora-a: 0.4;
+}
+
+body.theme-dark {
+  --ig-aurora-l: 55%;
+  --ig-aurora-a: 0.28;
+}
+
+// --- Frosting the panes -----------------------------------------------------
+// Now that there is a real backdrop, frosting produces visible glass. Blur is
+// kept off mobile, where a filter on a scrolled surface is expensive.
+
+body:not(.is-mobile) {
+  .workspace-split.mod-left-split,
+  .workspace-split.mod-right-split,
+  .workspace-tabs .workspace-leaf-content {
+    -webkit-backdrop-filter: blur(var(--ig-frost)) saturate(115%);
+    backdrop-filter: blur(var(--ig-frost)) saturate(115%);
   }
 }
 
 body {
-  --ig-frost: 30px;
+  --ig-frost: 40px;
 }
 
 // --- Edge lighting on the panes ---------------------------------------------

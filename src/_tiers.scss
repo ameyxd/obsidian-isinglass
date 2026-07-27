@@ -39,8 +39,17 @@
 
 body {
   // 0 = fully opaque base surfaces, 1 = maximum translucency.
-  // Style Settings drives this; _a11y.scss can force it to 0.
-  --ig-translucency: 0;
+  //
+  // This is now on by DEFAULT, on every platform. It used to be gated behind
+  // `.is-translucent`, because the thing being revealed was the macOS vibrancy
+  // material. That material turned out to be static on macOS 26 — dragging the
+  // window across the desktop changes nothing behind it — so revealing it only
+  // dimmed the interface.
+  //
+  // What the panes reveal now is the theme's own backdrop (see _glass.scss),
+  // which exists identically on macOS, Windows, and iOS. The glass is therefore
+  // ours, verifiable, and no longer contingent on an OS feature.
+  --ig-translucency: 1;
 
   // Floating layers are translucent in every tier, so this stays independent.
   --ig-float-translucency: 1;
@@ -77,12 +86,11 @@ body {
 // note *greyer*. Past a point that is a worse trade: a dimmed page in exchange
 // for an effect nobody can see. Light mode therefore runs lower by default, and
 // the Style Settings slider lets anyone who disagrees push it back up.
-body.is-translucent {
-  --ig-translucency: 1;
-}
-
+// Kept only so that anyone on an older macOS, where vibrancy genuinely samples
+// the desktop, still gets the real thing layered over ours. It is no longer
+// what the design depends on.
 body.is-translucent.theme-light {
-  --ig-translucency: 0.55;
+  --ig-translucency: 0.8;
 }
 
 // --- Tier C: mobile ---------------------------------------------------------
@@ -94,6 +102,7 @@ body.is-translucent.theme-light {
 body.is-mobile {
   --ig-blur: 12px;
   --ig-float-translucency: 0.7;
+  --ig-translucency: 0.6;
 }
 
 // ---------------------------------------------------------------------------
