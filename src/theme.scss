@@ -1,0 +1,13 @@
+// ---------------------------------------------------------------------------
+// Isinglass — a minimal, translucent theme for Obsidian
+// ---------------------------------------------------------------------------
+// Do not edit theme.css by hand. Edit these modules and run `npm run build`,
+// which recompiles and then verifies contrast and budgets.
+//
+// Load order matters: tokens define the raw values, tiers decide how translucent
+// each surface is and bridge onto Obsidian's own variable names, and everything
+// after that consumes the result.
+// ---------------------------------------------------------------------------
+
+@use 'tokens';
+@use 'tiers';

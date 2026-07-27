@@ -1,0 +1,114 @@
+body {
+  --ig-radius-sm: 6px;
+  --ig-radius-md: 10px;
+  --ig-radius-lg: 14px;
+  --ig-radius-xl: 20px;
+  --ig-space-1: 4px;
+  --ig-space-2: 8px;
+  --ig-space-3: 12px;
+  --ig-space-4: 16px;
+  --ig-space-5: 24px;
+  --ig-space-6: 32px;
+  --ig-ease: cubic-bezier(0.32, 0.72, 0, 1);
+  --ig-duration-fast: 100ms;
+  --ig-duration: 160ms;
+  --ig-blur: 20px;
+  --ig-blur-saturate: 180%;
+  --ig-opacity-floor: 0.82;
+  --ig-hairline: 0.5px;
+}
+
+body.theme-light {
+  --ig-h: 220;
+  --ig-s: 16%;
+  --ig-l0-l: 95.5%;
+  --ig-l1-l: 97%;
+  --ig-l2-l: 99.5%;
+  --ig-l3-l: 97.5%;
+  --ig-l4-l: 98.5%;
+  --ig-text-normal: hsl(220 15% 17%);
+  --ig-text-muted: hsl(220 12% 32%);
+  --ig-text-faint: hsl(220 10% 44%);
+  --ig-text-on-accent: hsl(0 0% 100%);
+  --ig-border: hsl(220 15% 87%);
+  --ig-border-strong: hsl(220 15% 78%);
+  --ig-shadow-sm: 0 1px 2px hsl(220 20% 20% / 0.06);
+  --ig-shadow-md: 0 4px 12px hsl(220 20% 20% / 0.08);
+  --ig-shadow-lg: 0 12px 32px hsl(220 20% 20% / 0.12);
+  --ig-glass-tint: 255, 255, 255;
+}
+
+body.theme-dark {
+  --ig-h: 220;
+  --ig-s: 13%;
+  --ig-l0-l: 9%;
+  --ig-l1-l: 11%;
+  --ig-l2-l: 13.5%;
+  --ig-l3-l: 17%;
+  --ig-l4-l: 18.5%;
+  --ig-text-normal: hsl(220 15% 92%);
+  --ig-text-muted: hsl(220 12% 72%);
+  --ig-text-faint: hsl(220 10% 58%);
+  --ig-text-on-accent: hsl(220 20% 10%);
+  --ig-border: hsl(220 12% 22%);
+  --ig-border-strong: hsl(220 12% 32%);
+  --ig-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
+  --ig-shadow-md: 0 4px 12px hsl(0 0% 0% / 0.32);
+  --ig-shadow-lg: 0 12px 32px hsl(0 0% 0% / 0.44);
+  --ig-glass-tint: 0, 0, 0;
+}
+
+body {
+  --ig-surface-0: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l) / var(--ig-a-l0));
+  --ig-surface-1: hsl(var(--ig-h) var(--ig-s) var(--ig-l1-l) / var(--ig-a-l1));
+  --ig-surface-2: hsl(var(--ig-h) var(--ig-s) var(--ig-l2-l) / var(--ig-a-l2));
+  --ig-surface-3: hsl(var(--ig-h) var(--ig-s) var(--ig-l3-l) / 1);
+  --ig-surface-4: hsl(var(--ig-h) var(--ig-s) var(--ig-l4-l) / var(--ig-a-l4));
+}
+
+body {
+  --ig-translucency: 0;
+  --ig-float-translucency: 1;
+  --ig-a-l0: calc(1 - 0.12 * var(--ig-translucency));
+  --ig-a-l1: calc(1 - 0.1 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.08 * var(--ig-translucency));
+  --ig-a-l4: calc(1 - 0.1 * var(--ig-float-translucency));
+}
+
+body.is-translucent {
+  --ig-translucency: 1;
+}
+
+body.is-mobile {
+  --ig-blur: 12px;
+  --ig-float-translucency: 0.7;
+}
+
+body {
+  --background-primary: var(--ig-surface-2);
+  --background-primary-alt: var(--ig-surface-3);
+  --background-secondary: var(--ig-surface-1);
+  --background-secondary-alt: var(--ig-surface-0);
+  --background-modifier-border: var(--ig-border);
+  --background-modifier-border-hover: var(--ig-border-strong);
+  --background-modifier-border-focus: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  --text-normal: var(--ig-text-normal);
+  --text-muted: var(--ig-text-muted);
+  --text-faint: var(--ig-text-faint);
+  --text-on-accent: var(--ig-text-on-accent);
+  --divider-color: var(--ig-border);
+  --titlebar-background: transparent;
+  --titlebar-background-focused: transparent;
+  --radius-s: var(--ig-radius-sm);
+  --radius-m: var(--ig-radius-md);
+  --radius-l: var(--ig-radius-lg);
+  --radius-xl: var(--ig-radius-xl);
+  --shadow-s: var(--ig-shadow-sm);
+  --shadow-l: var(--ig-shadow-lg);
+}
+
+.workspace,
+.horizontal-main-container,
+.workspace-split.mod-root {
+  background-color: var(--ig-surface-0);
+}

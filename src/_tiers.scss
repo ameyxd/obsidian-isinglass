@@ -1,0 +1,117 @@
+// ---------------------------------------------------------------------------
+// Fidelity tiers
+// ---------------------------------------------------------------------------
+// Obsidian's native translucency is macOS-only. From obsidian.asar (1.11.4):
+//
+//   function zf(){ return "darwin" === process.platform }
+//   enableTranslucency = function(){
+//     if (isDesktopApp && zf()) {
+//       electronWindow.setBackgroundColor("#00000000")
+//       electronWindow.setVibrancy("sidebar")
+//       document.body.addClass("is-translucent")
+//     }
+//   }
+//
+// So `.is-translucent` appears on macOS and nowhere else — the settings row
+// itself is gated on isDarwin(), and Windows users never see the toggle.
+//
+// That gives three render paths for one design language:
+//
+//   A  body.is-translucent      macOS. Window is #00000000 behind a system
+//                               vibrancy layer, so CSS alpha reveals the real
+//                               desktop wallpaper. No backdrop-filter needed
+//                               on base surfaces — the OS is already blurring.
+//
+//   B  everything else desktop  Windows, Linux, and macOS with translucency
+//                               off. The window is opaque; there is nothing
+//                               behind the app to blur. Depth comes from
+//                               luminance steps and hairlines instead.
+//
+//   C  body.is-mobile           As B, plus touch sizing and safe areas.
+//
+// In every tier, floating layers (L4) still use backdrop-filter — there it
+// blurs Obsidian's *own* content underneath, which reads as real glass on all
+// three platforms.
+// ---------------------------------------------------------------------------
+
+// --- Tier B / C: the opaque default ----------------------------------------
+// Declared on `body` so it is the baseline every tier starts from.
+
+body {
+  // 0 = fully opaque base surfaces, 1 = maximum translucency.
+  // Style Settings drives this; _a11y.scss can force it to 0.
+  --ig-translucency: 0;
+
+  // Floating layers are translucent in every tier, so this stays independent.
+  --ig-float-translucency: 1;
+
+  // Per-level alpha. Each level's second term is how much transparency that
+  // level is allowed at full strength — L2 (the note surface) gets the least,
+  // because that is where body text lives.
+  // These four numbers were set by contrast-check, not by eye. Raising any of
+  // them fails the build against a black or white wallpaper.
+  --ig-a-l0: calc(1 - 0.12 * var(--ig-translucency));
+  --ig-a-l1: calc(1 - 0.1 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.08 * var(--ig-translucency));
+  --ig-a-l4: calc(1 - 0.1 * var(--ig-float-translucency));
+}
+
+// --- Tier A: true glass (macOS only) ---------------------------------------
+
+body.is-translucent {
+  --ig-translucency: 1;
+}
+
+// --- Tier C: mobile ---------------------------------------------------------
+// `.is-translucent` is never present on mobile, so tier C already inherits the
+// opaque baseline. What it changes is the blur budget: WKWebView pays more for
+// backdrop-filter than Electron does, so floating layers blur less and lean on
+// opacity instead.
+
+body.is-mobile {
+  --ig-blur: 12px;
+  --ig-float-translucency: 0.7;
+}
+
+// ---------------------------------------------------------------------------
+// Bridge to Obsidian's own variables
+// ---------------------------------------------------------------------------
+// Obsidian and every plugin read these names. Mapping our elevation model onto
+// them once here means the rest of the theme — and any plugin we never styled —
+// picks up the tier system for free.
+
+body {
+  --background-primary: var(--ig-surface-2);
+  --background-primary-alt: var(--ig-surface-3);
+  --background-secondary: var(--ig-surface-1);
+  --background-secondary-alt: var(--ig-surface-0);
+
+  --background-modifier-border: var(--ig-border);
+  --background-modifier-border-hover: var(--ig-border-strong);
+  --background-modifier-border-focus: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+
+  --text-normal: var(--ig-text-normal);
+  --text-muted: var(--ig-text-muted);
+  --text-faint: var(--ig-text-faint);
+  --text-on-accent: var(--ig-text-on-accent);
+
+  --divider-color: var(--ig-border);
+  --titlebar-background: transparent;
+  --titlebar-background-focused: transparent;
+
+  --radius-s: var(--ig-radius-sm);
+  --radius-m: var(--ig-radius-md);
+  --radius-l: var(--ig-radius-lg);
+  --radius-xl: var(--ig-radius-xl);
+
+  --shadow-s: var(--ig-shadow-sm);
+  --shadow-l: var(--ig-shadow-lg);
+}
+
+// The workspace backdrop is L0. In tier A this is the surface the wallpaper
+// shows through most strongly; in B and C it is simply the darkest step.
+.workspace,
+.horizontal-main-container,
+.workspace-split.mod-root {
+  background-color: var(--ig-surface-0);
+}
