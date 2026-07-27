@@ -153,19 +153,28 @@ body.theme-light {
   --ig-aurora-a: 0.55;
 }
 
+// Dark runs a lower alpha than light: at 24% lightness and 70% saturation the
+// field is a rich purple, and 0.55 flooded the chrome with it. 0.38 keeps the
+// colour readable as atmosphere instead of paint.
 body.theme-dark {
   --ig-aurora-l: 24%;
-  --ig-aurora-a: 0.55;
+  --ig-aurora-a: 0.38;
 }
 
 // --- Frosting the panes -----------------------------------------------------
 // Now that there is a real backdrop, frosting produces visible glass. Blur is
 // kept off mobile, where a filter on a scrolled surface is expensive.
+//
+// The leaf selector is scoped to the ROOT split. The sidebars already frost as
+// whole panes, and an unscoped `.workspace-tabs .workspace-leaf-content` also
+// matched the leaves INSIDE them — a backdrop-filter nested inside another
+// backdrop-filter, over the graph view's canvas. That double-sampling rendered
+// as magenta smears and glitch bands on the real window. One frost per pixel.
 
 body:not(.is-mobile) {
   .workspace-split.mod-left-split,
   .workspace-split.mod-right-split,
-  .workspace-tabs .workspace-leaf-content {
+  .workspace-split.mod-root .workspace-tabs .workspace-leaf-content {
     -webkit-backdrop-filter: blur(var(--ig-frost)) saturate(115%);
     backdrop-filter: blur(var(--ig-frost)) saturate(115%);
   }

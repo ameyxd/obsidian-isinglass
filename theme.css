@@ -73,7 +73,7 @@ body {
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency) * var(--ig-user-glass));
 }
 
-body:not(.is-translucent) {
+body {
   background-color: hsl(var(--ig-h), var(--ig-s), var(--ig-l0-l));
 }
 
@@ -107,21 +107,9 @@ body {
 }
 
 body.is-translucent {
-  --workspace-background-translucent: transparent;
+  --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
 }
 
-@media (prefers-color-scheme: light) {
-  body.is-translucent.theme-dark {
-    --ig-translucency: 0.35;
-    --workspace-background-translucent: var(--ig-surface-0);
-  }
-}
-@media (prefers-color-scheme: dark) {
-  body.is-translucent.theme-light {
-    --ig-translucency: 0.35;
-    --workspace-background-translucent: var(--ig-surface-0);
-  }
-}
 body:not(.is-translucent) .workspace,
 body:not(.is-translucent) .horizontal-main-container,
 body:not(.is-translucent) .workspace-split.mod-root {
@@ -952,12 +940,12 @@ body.theme-light {
 
 body.theme-dark {
   --ig-aurora-l: 24%;
-  --ig-aurora-a: 0.55;
+  --ig-aurora-a: 0.38;
 }
 
 body:not(.is-mobile) .workspace-split.mod-left-split,
 body:not(.is-mobile) .workspace-split.mod-right-split,
-body:not(.is-mobile) .workspace-tabs .workspace-leaf-content {
+body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs .workspace-leaf-content {
   -webkit-backdrop-filter: blur(var(--ig-frost)) saturate(115%);
   backdrop-filter: blur(var(--ig-frost)) saturate(115%);
 }

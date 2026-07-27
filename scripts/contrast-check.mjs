@@ -115,37 +115,17 @@ function readMode(name) {
   };
 }
 
-const WALLPAPER = { black: [0, 0, 0], white: [255, 255, 255] };
-
-// What tier A actually sits on.
+// What a pane actually sits on, on every platform: the theme's own OPAQUE
+// floor (painted unconditionally on body, and routed through
+// --workspace-background-translucent when Obsidian's macOS toggle is on), with
+// the aurora over it. The OS vibrancy material no longer participates — the
+// floor exists precisely so that it cannot — which is what lets this file
+// model one substrate instead of guessing at wallpapers and materials.
 //
-// The first version of this file composited base surfaces straight onto the
-// wallpaper. That is wrong, and it was wrong in the expensive direction: it
-// capped base translucency near 10–12%, which made the theme look flat.
-//
-// macOS never hands the window a raw wallpaper. `setVibrancy("sidebar")` puts
-// an NSVisualEffectView material behind the content, which heavily blurs and
-// desaturates whatever is behind it and tints the result toward the current
-// appearance. Obsidian then paints its own tint layer on top —
-//   --workspace-background-translucent: rgba(var(--mono-rgb-0), 0.6)
-// — i.e. the app itself ships 60% opacity, four to six times more transparent
-// than the cap this checker was enforcing.
-//
-// So the backdrop is modelled as the material's own tint mixed with the
-// wallpaper. MATERIAL_WEIGHT is deliberately conservative: real macOS materials
-// contribute more of their own tint than this, so a pass here is a pass on the
-// actual platform.
-const MATERIAL_WEIGHT = 0.6;
-const MATERIAL_TINT = { light: [255, 255, 255], dark: [0, 0, 0] };
-
-// The theme paints its own backdrop behind the workspace (see _glass.scss), so
-// what a pane actually composites onto is that aurora, not the raw material.
-// Unlike a wallpaper this is *known* — the only free variable is the user's
-// accent hue, which is swept below. That is what allows the panes to be far
-// more translucent than the wallpaper-extremes model permitted: the design no
-// longer has to survive a backdrop it cannot see.
-// Read from the compiled CSS rather than restated here — a second copy of these
-// numbers is exactly the kind of drift that let earlier bugs pass a green build.
+// The only free variable is the user's accent hue, which is swept below.
+// Aurora lightness/alpha are read from the compiled CSS rather than restated
+// here — a second copy of those numbers is exactly the kind of drift that let
+// earlier bugs pass a green build.
 
 // Luminance varies a lot by hue at fixed HSL lightness (yellow reads far
 // brighter than blue), so both extremes are checked.
@@ -167,37 +147,13 @@ function auroraExtremes(modeName, base) {
   return { 'aurora (darkest hue)': lo.c, 'aurora (brightest hue)': hi.c };
 }
 
-// `opposite` models the appearance-mismatch case: Obsidian in dark while macOS
-// is light (or vice versa), where the material fights the text instead of
-// supporting it. That case gets its own reduced translucency rather than being
-// forced fully opaque — collapsing it to zero is visible as a jarring snap when
-// the user switches themes.
-function vibrancyBackdrops(modeName, opposite = false) {
-  const tint = MATERIAL_TINT[opposite ? (modeName === 'light' ? 'dark' : 'light') : modeName];
-  const out = {};
-  for (const [name, paper] of Object.entries(WALLPAPER)) {
-    out[`${opposite ? 'opposed ' : ''}vibrancy over ${name}`] = composite(
-      tint,
-      MATERIAL_WEIGHT,
-      paper
-    );
-  }
-  return out;
-}
-
-// Tiers B and C are opaque at the base levels, so their only translucent
-// surface is L4, which composites over in-app content — bounded by the mode's
-// own darkest and lightest surface.
-// MISMATCH_SCALE must match --ig-translucency in the prefers-color-scheme
-// blocks in _tiers.scss. It is scaled down rather than zeroed so that switching
-// Obsidian's theme does not snap the window from glass to solid.
-const MISMATCH_SCALE = 0.35;
-
+// One rendering model, two budgets. These translucency values must match the
+// body default and body.is-mobile override in _tiers.scss — an earlier version
+// of this table still said desktop runs opaque after the CSS default had moved
+// to 1, which is precisely the CSS/checker drift this project keeps paying for.
 const TIERS = [
-  { id: 'A', translucency: 1, float: 1, vibrancy: true },
-  { id: 'A-mismatch', translucency: MISMATCH_SCALE, float: 1, vibrancy: 'opposite' },
-  { id: 'B', translucency: 0, float: 1, vibrancy: false },
-  { id: 'C', translucency: 0, float: 0.7, vibrancy: false },
+  { id: 'desktop', translucency: 1, float: 1 },
+  { id: 'mobile', translucency: 0.6, float: 0.7 },
 ];
 
 // text token -> minimum ratio. Body and UI text must clear AA; `faint` is used
@@ -236,18 +192,12 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     // so its true backdrop is an already-composited base surface. Checking L4
     // against the bare wallpaper would model a case that cannot occur, and
     // would force its alpha needlessly high.
-    // The real stack under a pane is: substrate (the OS material, or an opaque
-    // window on platforms without one) → the theme's aurora → the pane itself.
-    const substrates = tier.vibrancy
-      ? vibrancyBackdrops(mode.name, tier.vibrancy === 'opposite')
-      : { 'opaque base': mode.surface.l0 };
-
-    const baseBackdrops = {};
-    for (const [subName, sub] of Object.entries(substrates)) {
-      for (const [auroraName, colour] of Object.entries(auroraExtremes(mode.name, sub))) {
-        baseBackdrops[`${auroraName} on ${subName}`] = colour;
-      }
-    }
+    // The real stack under a pane: opaque floor → aurora → the pane itself.
+    // The bare floor is checked too — the aurora is a pair of radial gradients
+    // that fade out across most of the screen, and the Style Settings slider
+    // can reduce it, so panes routinely composite over floor alone.
+    const floor = mode.surface.l0;
+    const baseBackdrops = { 'bare floor': floor, ...auroraExtremes(mode.name, floor) };
 
     const composited = (lvl, bg) =>
       alpha[lvl] >= 0.999 ? mode.surface[lvl] : composite(mode.surface[lvl], alpha[lvl], bg);
