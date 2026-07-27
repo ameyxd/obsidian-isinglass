@@ -194,15 +194,22 @@ body.is-translucent {
 // snap: switching Obsidian to dark on a light Mac showed a moment of glass and
 // then slammed shut. 0.35 is the ceiling contrast-check allows for the opposed
 // material, and it keeps the transition continuous.
+// The chrome must also get a real surface back. Obsidian forces the sidebars
+// and tab strip transparent, so they show the bare material — and in a mismatch
+// that material is the *wrong* polarity: light-mode text on a dark material, or
+// the reverse. Reducing --ig-translucency alone does not help, because the
+// chrome never had a surface of its own to make more opaque.
 @media (prefers-color-scheme: light) {
   body.is-translucent.theme-dark {
     --ig-translucency: 0.35;
+    --workspace-background-translucent: var(--ig-surface-0);
   }
 }
 
 @media (prefers-color-scheme: dark) {
   body.is-translucent.theme-light {
     --ig-translucency: 0.35;
+    --workspace-background-translucent: var(--ig-surface-0);
   }
 }
 

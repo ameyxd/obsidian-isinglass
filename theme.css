@@ -118,11 +118,13 @@ body.is-translucent {
 @media (prefers-color-scheme: light) {
   body.is-translucent.theme-dark {
     --ig-translucency: 0.35;
+    --workspace-background-translucent: var(--ig-surface-0);
   }
 }
 @media (prefers-color-scheme: dark) {
   body.is-translucent.theme-light {
     --ig-translucency: 0.35;
+    --workspace-background-translucent: var(--ig-surface-0);
   }
 }
 body:not(.is-translucent) .workspace,
