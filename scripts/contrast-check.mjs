@@ -117,13 +117,43 @@ function readMode(name) {
 
 const WALLPAPER = { black: [0, 0, 0], white: [255, 255, 255] };
 
-// Tier A composites over the unknowable wallpaper. Tiers B and C are opaque at
-// the base levels, so their only translucent surface is L4, which composites
-// over in-app content — bounded by the mode's own darkest and lightest surface.
+// What tier A actually sits on.
+//
+// The first version of this file composited base surfaces straight onto the
+// wallpaper. That is wrong, and it was wrong in the expensive direction: it
+// capped base translucency near 10–12%, which made the theme look flat.
+//
+// macOS never hands the window a raw wallpaper. `setVibrancy("sidebar")` puts
+// an NSVisualEffectView material behind the content, which heavily blurs and
+// desaturates whatever is behind it and tints the result toward the current
+// appearance. Obsidian then paints its own tint layer on top —
+//   --workspace-background-translucent: rgba(var(--mono-rgb-0), 0.6)
+// — i.e. the app itself ships 60% opacity, four to six times more transparent
+// than the cap this checker was enforcing.
+//
+// So the backdrop is modelled as the material's own tint mixed with the
+// wallpaper. MATERIAL_WEIGHT is deliberately conservative: real macOS materials
+// contribute more of their own tint than this, so a pass here is a pass on the
+// actual platform.
+const MATERIAL_WEIGHT = 0.6;
+const MATERIAL_TINT = { light: [255, 255, 255], dark: [0, 0, 0] };
+
+function vibrancyBackdrops(modeName) {
+  const tint = MATERIAL_TINT[modeName];
+  const out = {};
+  for (const [name, paper] of Object.entries(WALLPAPER)) {
+    out[`vibrancy over ${name}`] = composite(tint, MATERIAL_WEIGHT, paper);
+  }
+  return out;
+}
+
+// Tiers B and C are opaque at the base levels, so their only translucent
+// surface is L4, which composites over in-app content — bounded by the mode's
+// own darkest and lightest surface.
 const TIERS = [
-  { id: 'A', translucency: 1, float: 1, backdrops: WALLPAPER },
-  { id: 'B', translucency: 0, float: 1, backdrops: null },
-  { id: 'C', translucency: 0, float: 0.7, backdrops: null },
+  { id: 'A', translucency: 1, float: 1, vibrancy: true },
+  { id: 'B', translucency: 0, float: 1, vibrancy: false },
+  { id: 'C', translucency: 0, float: 0.7, vibrancy: false },
 ];
 
 // text token -> minimum ratio. Body and UI text must clear AA; `faint` is used
@@ -162,11 +192,12 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     // so its true backdrop is an already-composited base surface. Checking L4
     // against the bare wallpaper would model a case that cannot occur, and
     // would force its alpha needlessly high.
-    const baseBackdrops =
-      tier.backdrops ?? {
-        'darkest in-app': mode.surface.l0,
-        'lightest in-app': mode.surface.l2,
-      };
+    const baseBackdrops = tier.vibrancy
+      ? vibrancyBackdrops(mode.name)
+      : {
+          'darkest in-app': mode.surface.l0,
+          'lightest in-app': mode.surface.l2,
+        };
 
     const composited = (lvl, bg) =>
       alpha[lvl] >= 0.999 ? mode.surface[lvl] : composite(mode.surface[lvl], alpha[lvl], bg);

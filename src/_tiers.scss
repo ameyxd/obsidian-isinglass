@@ -48,15 +48,19 @@ body {
   // Per-level alpha. Each level's second term is how much transparency that
   // level is allowed at full strength — L2 (the note surface) gets the least,
   // because that is where body text lives.
-  // L0-L2 sit against the unknown wallpaper, so contrast-check sets their
-  // ceiling: raising any of the three fails against a black or white desktop.
+  // L0-L2 sit against the macOS vibrancy material in tier A. contrast-check
+  // models that material rather than a raw wallpaper (see its header), which is
+  // what makes these numbers viable: an earlier, wrong model capped L0 at 0.12
+  // and made the theme look flat. Max passing is L0 0.45; these sit one step
+  // below for headroom.
+  //
   // L4 is different — it always composites over app content, so contrast is not
-  // its binding constraint and the value below is a design choice: glassy
-  // enough to read as glass, opaque enough that blurred text underneath does
-  // not compete with the palette's own labels.
-  --ig-a-l0: calc(1 - 0.12 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.1 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.08 * var(--ig-translucency));
+  // its binding constraint and its value is a design choice: glassy enough to
+  // read as glass, opaque enough that blurred text underneath does not compete
+  // with the palette's own labels.
+  --ig-a-l0: calc(1 - 0.4 * var(--ig-translucency));
+  --ig-a-l1: calc(1 - 0.34 * var(--ig-translucency));
+  --ig-a-l2: calc(1 - 0.18 * var(--ig-translucency));
   --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
 }
 
@@ -112,10 +116,40 @@ body {
   --shadow-l: var(--ig-shadow-lg);
 }
 
-// The workspace backdrop is L0. In tier A this is the surface the wallpaper
-// shows through most strongly; in B and C it is simply the darkest step.
-.workspace,
-.horizontal-main-container,
-.workspace-split.mod-root {
-  background-color: var(--ig-surface-0);
+// --- The workspace backdrop -------------------------------------------------
+// Obsidian has a specific structure for translucency, and a theme has to work
+// with it rather than paint over it. From its own stylesheet:
+//
+//   body.is-translucent { background-color: transparent }
+//   .is-translucent:not(.is-fullscreen) .titlebar,
+//   .is-translucent:not(.is-fullscreen) .app-container {
+//     background-color: var(--workspace-background-translucent);
+//   }
+//   .is-translucent:not(.is-fullscreen) .workspace-split,
+//   .is-translucent:not(.is-fullscreen) .workspace-tabs,
+//   .is-translucent:not(.is-fullscreen) .workspace-ribbon.mod-left,
+//   .is-translucent:not(.is-fullscreen) .workspace-tabs .workspace-leaf {
+//     background-color: transparent !important;
+//   }
+//   .is-translucent .workspace { background-color: transparent }
+//
+// So `.app-container` carries the single glass layer and everything inside it
+// is forced transparent. Painting L0 onto `.workspace` — which this theme did
+// at first — sits *above* that glass and cancels it entirely.
+//
+// Note also `:not(.is-fullscreen)`: Obsidian disables translucency outright in
+// fullscreen. Nothing a theme can do about that.
+
+// Tier A: hand the glass to Obsidian's own variable and stay out of the way.
+body.is-translucent {
+  --workspace-background-translucent: var(--ig-surface-0);
+}
+
+// Tiers B and C: no glass layer exists, so the backdrop is painted normally.
+body:not(.is-translucent) {
+  .workspace,
+  .horizontal-main-container,
+  .workspace-split.mod-root {
+    background-color: var(--ig-surface-0);
+  }
 }
