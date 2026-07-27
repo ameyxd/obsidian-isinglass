@@ -930,35 +930,23 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(120% 90% at 15% 0%, hsl(var(--accent-h), 70%, var(--ig-aurora-l), calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%, transparent 60%), radial-gradient(100% 80% at 85% 100%, hsl(calc(var(--accent-h) + 60), 60%, var(--ig-aurora-l), calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%, transparent 55%);
+  background: radial-gradient(120% 90% at 15% 0%, hsl(var(--accent-h), 60%, var(--ig-aurora-l), calc(var(--ig-aurora-a) * var(--ig-user-aurora))) 0%, transparent 60%), linear-gradient(180deg, hsl(var(--ig-h), var(--ig-s), var(--ig-toplight-l), 0.5) 0%, transparent 45%);
+}
+
+body {
+  --ig-user-aurora: 0;
 }
 
 body.theme-light {
   --ig-aurora-l: 90%;
   --ig-aurora-a: 0.55;
+  --ig-toplight-l: 100%;
 }
 
 body.theme-dark {
   --ig-aurora-l: 24%;
   --ig-aurora-a: 0.38;
-}
-
-body:not(.is-mobile) .workspace-split.mod-left-split,
-body:not(.is-mobile) .workspace-split.mod-right-split,
-body:not(.is-mobile) .workspace-split.mod-root .workspace-tabs .workspace-leaf-content {
-  -webkit-backdrop-filter: blur(var(--ig-frost)) saturate(115%);
-  backdrop-filter: blur(var(--ig-frost)) saturate(115%);
-}
-
-body {
-  --ig-frost: 40px;
-}
-
-body.is-translucent .workspace-split.mod-left-split {
-  border-inline-end: 1px solid var(--ig-glass-highlight-soft);
-}
-body.is-translucent .workspace-split.mod-right-split {
-  border-inline-start: 1px solid var(--ig-glass-highlight-soft);
+  --ig-toplight-l: 16%;
 }
 
 body.is-mobile .nav-file-title,
@@ -1068,22 +1056,22 @@ settings:
     step: 0.05
   -
     id: ig-user-aurora
-    title: Backdrop strength
-    description: The soft accent-tinted field behind the workspace that the glass frosts over.
+    title: Accent tint
+    description: An optional soft wash of your accent colour behind the workspace. Off by default.
     type: variable-number-slider
-    default: 1
-    min: 0.4
+    default: 0
+    min: 0
     max: 1
     step: 0.05
   -
-    id: ig-frost
-    title: Frost blur
-    description: How strongly the panes blur the backdrop behind them.
+    id: ig-blur
+    title: Glass blur
+    description: How strongly floating surfaces such as menus and the command palette blur the content behind them.
     type: variable-number-slider
-    default: 40
+    default: 20
     min: 0
-    max: 60
-    step: 5
+    max: 40
+    step: 2
     format: px
   -
     id: ig-no-grain
@@ -1196,12 +1184,6 @@ body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
     --ig-grain-opacity: 0;
     --ig-blur: 0px;
     --ig-blur-saturate: 100%;
-  }
-  body:not(.is-mobile) .workspace-split.mod-left-split,
-  body:not(.is-mobile) .workspace-split.mod-right-split,
-  body:not(.is-mobile) .workspace-tabs .workspace-leaf-content {
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
   }
   body.is-translucent {
     --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));

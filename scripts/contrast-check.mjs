@@ -192,12 +192,24 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     // so its true backdrop is an already-composited base surface. Checking L4
     // against the bare wallpaper would model a case that cannot occur, and
     // would force its alpha needlessly high.
-    // The real stack under a pane: opaque floor → aurora → the pane itself.
-    // The bare floor is checked too — the aurora is a pair of radial gradients
-    // that fade out across most of the screen, and the Style Settings slider
-    // can reduce it, so panes routinely composite over floor alone.
+    // The real stack under a pane: opaque floor → backdrop gradients → pane.
+    // Three backdrop cases: the bare floor (gradients fade out over most of the
+    // screen), the always-on monochrome top-light at its strongest point, and
+    // the accent tint at its Style Settings maximum, swept across every hue.
     const floor = mode.surface.l0;
-    const baseBackdrops = { 'bare floor': floor, ...auroraExtremes(mode.name, floor) };
+    const b = block(`body.theme-${mode.name}`);
+    const toplightL = parseFloat(decl(b, '--ig-toplight-l'));
+    if (Number.isNaN(toplightL)) {
+      throw new Error(`contrast-check: missing --ig-toplight-l for theme-${mode.name}`);
+    }
+    const h = parseFloat(decl(b, '--ig-h'));
+    const s = parseFloat(decl(b, '--ig-s'));
+    const baseBackdrops = {
+      'bare floor': floor,
+      // 0.5 must match the top-light gradient alpha in _glass.scss.
+      'top-light on floor': composite(hslToRgb(h, s, toplightL), 0.5, floor),
+      ...auroraExtremes(mode.name, floor),
+    };
 
     const composited = (lvl, bg) =>
       alpha[lvl] >= 0.999 ? mode.surface[lvl] : composite(mode.surface[lvl], alpha[lvl], bg);

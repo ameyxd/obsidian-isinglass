@@ -100,19 +100,25 @@ body.theme-dark {
   z-index: 1;
 }
 
-// --- The backdrop we own ----------------------------------------------------
-// Verified on macOS 26: `setVibrancy` renders a *static* material. Dragging the
-// window across the desktop changes nothing behind it. So CSS alpha on a base
-// surface reveals a fixed grey wash — it dims the interface and shows nothing,
-// which is why more transparency kept making things worse rather than glassier.
+// --- The backdrop ------------------------------------------------------------
+// Two platform facts bound what base surfaces can honestly do:
 //
-// Glass needs something behind it to refract. Rather than depend on an OS
-// feature that no longer delivers, the theme supplies its own backdrop: a very
-// soft, low-contrast field derived from the user's accent hue, painted behind
-// the whole workspace. The panes then frost over *that*.
+// 1. On macOS 26 `setVibrancy` renders a STATIC material — dragging the window
+//    across the desktop changes nothing behind it (owner-verified, twice). No
+//    CSS can reveal a desktop the compositor never samples. Real see-through
+//    windows are not achievable, on any theme, on this platform.
+// 2. Frosting a static painted field is invisible: blurring a smooth gradient
+//    returns the same gradient. A coloured "aurora" backdrop plus pane blur
+//    was tried and read as weird colours, not glass. Removed as default.
 //
-// The payoff is that this behaves identically on macOS, Windows, and iOS — the
-// glass identity stops being a macOS-only effect that degrades everywhere else.
+// So base surfaces do not pretend. They are a quiet monochrome field — the
+// opaque floor plus a soft top-light, like a lit sheet of paper — with the
+// elevation ladder and hairlines carrying depth. The REAL glass lives on the
+// floating layers, which blur actual moving content and behave identically on
+// macOS, Windows, and iOS.
+//
+// The accent tint survives as an opt-in Style Settings slider (default 0) for
+// anyone who wants the coloured field back.
 
 // `.workspace` must form its own stacking context, or the negative-z pseudo
 // falls behind an ancestor's background and silently vanishes — stacking
@@ -128,73 +134,46 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  // --ig-user-aurora is the Style Settings strength slider. Its floor is 0.4,
-  // not 0: contrast-check verifies the panes against the aurora-composited
-  // backdrop, so glass with no backdrop at all is an unverified state. The
-  // routes to zero aurora are the ones that also make the surfaces opaque —
-  // reduced-transparency and high contrast in _a11y.scss.
   background:
+    // Optional accent tint, off by default (--ig-user-aurora: 0).
     radial-gradient(
       120% 90% at 15% 0%,
-      hsl(var(--accent-h) 70% var(--ig-aurora-l) /
-        calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%,
+      hsl(var(--accent-h) 60% var(--ig-aurora-l) /
+        calc(var(--ig-aurora-a) * var(--ig-user-aurora))) 0%,
       transparent 60%
     ),
-    radial-gradient(
-      100% 80% at 85% 100%,
-      hsl(calc(var(--accent-h) + 60) 60% var(--ig-aurora-l) /
-        calc(var(--ig-aurora-a) * var(--ig-user-aurora, 1))) 0%,
-      transparent 55%
+    // Always-on monochrome top-light: enough luminance movement for the ladder
+    // to read as sheets, no hue for the eye to call weird.
+    linear-gradient(
+      180deg,
+      hsl(var(--ig-h) var(--ig-s) var(--ig-toplight-l) / 0.5) 0%,
+      transparent 45%
     );
+}
+
+body {
+  --ig-user-aurora: 0;
 }
 
 body.theme-light {
   --ig-aurora-l: 90%;
   --ig-aurora-a: 0.55;
+  --ig-toplight-l: 100%;
 }
 
-// Dark runs a lower alpha than light: at 24% lightness and 70% saturation the
-// field is a rich purple, and 0.55 flooded the chrome with it. 0.38 keeps the
-// colour readable as atmosphere instead of paint.
 body.theme-dark {
   --ig-aurora-l: 24%;
   --ig-aurora-a: 0.38;
+  --ig-toplight-l: 16%;
 }
 
-// --- Frosting the panes -----------------------------------------------------
-// Now that there is a real backdrop, frosting produces visible glass. Blur is
-// kept off mobile, where a filter on a scrolled surface is expensive.
-//
-// The leaf selector is scoped to the ROOT split. The sidebars already frost as
-// whole panes, and an unscoped `.workspace-tabs .workspace-leaf-content` also
-// matched the leaves INSIDE them — a backdrop-filter nested inside another
-// backdrop-filter, over the graph view's canvas. That double-sampling rendered
-// as magenta smears and glitch bands on the real window. One frost per pixel.
+// --- No frost on base panes --------------------------------------------------
+// Deliberately absent. backdrop-filter on the sidebars and note surface blurred
+// only the static field above — an effect indistinguishable from not existing,
+// at real paint cost, and its nested sampling produced compositor glitches over
+// canvas views. Frost belongs where content actually moves behind the surface:
+// the floating layers in _floating.scss.
 
-body:not(.is-mobile) {
-  .workspace-split.mod-left-split,
-  .workspace-split.mod-right-split,
-  .workspace-split.mod-root .workspace-tabs .workspace-leaf-content {
-    -webkit-backdrop-filter: blur(var(--ig-frost)) saturate(115%);
-    backdrop-filter: blur(var(--ig-frost)) saturate(115%);
-  }
-}
-
-body {
-  --ig-frost: 40px;
-}
-
-// --- Edge lighting on the panes ---------------------------------------------
-// Sidebars and the note pane get a hairline of light along their leading edge
-// in tier A, so the panes read as separate sheets of glass rather than one
-// continuous translucent field.
-
-body.is-translucent {
-  .workspace-split.mod-left-split {
-    border-inline-end: 1px solid var(--ig-glass-highlight-soft);
-  }
-
-  .workspace-split.mod-right-split {
-    border-inline-start: 1px solid var(--ig-glass-highlight-soft);
-  }
-}
+// Edge lighting on the base panes was removed with the aurora: the hairline
+// separation in _components.scss already does that job identically on every
+// platform, and a second per-state border was one more thing to drift.

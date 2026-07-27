@@ -39,22 +39,22 @@ settings:
     step: 0.05
   -
     id: ig-user-aurora
-    title: Backdrop strength
-    description: The soft accent-tinted field behind the workspace that the glass frosts over.
+    title: Accent tint
+    description: An optional soft wash of your accent colour behind the workspace. Off by default.
     type: variable-number-slider
-    default: 1
-    min: 0.4
+    default: 0
+    min: 0
     max: 1
     step: 0.05
   -
-    id: ig-frost
-    title: Frost blur
-    description: How strongly the panes blur the backdrop behind them.
+    id: ig-blur
+    title: Glass blur
+    description: How strongly floating surfaces such as menus and the command palette blur the content behind them.
     type: variable-number-slider
-    default: 40
+    default: 20
     min: 0
-    max: 60
-    step: 5
+    max: 40
+    step: 2
     format: px
   -
     id: ig-no-grain
