@@ -155,14 +155,34 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     };
 
     // Backdrops behind a translucent surface in this tier.
-    const backdrops =
+    //
+    // Base surfaces (L0–L2) sit directly against the unknown wallpaper in tier
+    // A, so they are checked against both extremes. Floating layers (L4) do
+    // not: a modal or the command palette always appears *over* app content,
+    // so its true backdrop is an already-composited base surface. Checking L4
+    // against the bare wallpaper would model a case that cannot occur, and
+    // would force its alpha needlessly high.
+    const baseBackdrops =
       tier.backdrops ?? {
         'darkest in-app': mode.surface.l0,
         'lightest in-app': mode.surface.l2,
       };
 
+    const composited = (lvl, bg) =>
+      alpha[lvl] >= 0.999 ? mode.surface[lvl] : composite(mode.surface[lvl], alpha[lvl], bg);
+
+    // What actually sits behind a floating layer, per possible backdrop.
+    const floatBackdrops = {};
+    for (const [bgName, bg] of Object.entries(baseBackdrops)) {
+      for (const under of ['l0', 'l2']) {
+        const label = bg ? `${under.toUpperCase()} over ${bgName}` : under.toUpperCase();
+        floatBackdrops[label] = composited(under, bg);
+      }
+    }
+
     for (const [lvl, tokens] of PAIRS) {
       const a = alpha[lvl];
+      const backdrops = lvl === 'l4' ? floatBackdrops : baseBackdrops;
       // An opaque surface has no backdrop dependency — check it once.
       const cases = a >= 0.999 ? { opaque: null } : backdrops;
 

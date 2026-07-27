@@ -1,0 +1,320 @@
+// ---------------------------------------------------------------------------
+// App chrome
+// ---------------------------------------------------------------------------
+// Restyle rather than hide: everything stays visible, but slimmed, quieted, and
+// de-bordered. Hiding is opt-in through Style Settings.
+//
+// Chrome sits at L0 and L1, which are the surfaces that carry translucency in
+// tier A. None of it uses backdrop-filter — on macOS the system is already
+// blurring, and on Windows and iOS there is nothing behind the window to blur,
+// so a filter here would cost paint time and produce nothing.
+// ---------------------------------------------------------------------------
+
+// --- Window frame -----------------------------------------------------------
+// The title bar dissolves into the workspace. On macOS the traffic lights sit
+// over L0 directly; `.is-frameless` covers the case where Obsidian draws its
+// own frame.
+
+.workspace-ribbon,
+.workspace-tabs .workspace-tab-header-container,
+.status-bar {
+  background-color: transparent;
+  border: none;
+}
+
+.workspace-split.mod-left-split,
+.workspace-split.mod-right-split {
+  background-color: var(--ig-surface-1);
+}
+
+// A hairline is the only separation between panes. In tier A the luminance step
+// alone is too subtle once the wallpaper shows through.
+.workspace-split.mod-left-split {
+  border-inline-end: var(--ig-hairline) solid var(--ig-border);
+}
+
+.workspace-split.mod-right-split {
+  border-inline-start: var(--ig-hairline) solid var(--ig-border);
+}
+
+// --- Ribbon -----------------------------------------------------------------
+
+.workspace-ribbon.mod-left {
+  border: none;
+}
+
+.side-dock-ribbon-action,
+.clickable-icon {
+  color: var(--ig-text-muted);
+  border-radius: var(--ig-radius-sm);
+  transition:
+    color var(--ig-duration-fast) var(--ig-ease),
+    background-color var(--ig-duration-fast) var(--ig-ease);
+}
+
+.side-dock-ribbon-action:hover,
+.clickable-icon:hover {
+  color: var(--ig-text-normal);
+  background-color: var(--ig-surface-3);
+}
+
+.side-dock-ribbon-action.is-active,
+.clickable-icon.is-active {
+  color: var(--text-accent);
+}
+
+// --- Tabs -------------------------------------------------------------------
+// Tabs read as a segmented control: no borders, the active tab is a filled
+// rounded pill sitting on the sidebar surface.
+
+body {
+  --tab-radius-active: var(--ig-radius-md);
+  --tab-outline-width: 0;
+  --tab-divider-color: transparent;
+  --tab-text-color: var(--ig-text-muted);
+  --tab-text-color-active: var(--ig-text-normal);
+  --tab-text-color-focused-active: var(--ig-text-normal);
+  --tab-text-color-focused-active-current: var(--ig-text-normal);
+  --tab-font-weight: 500;
+  --tab-container-background: transparent;
+  --tab-background-active: var(--ig-surface-2);
+}
+
+.workspace-tab-header {
+  border-radius: var(--ig-radius-md);
+  transition: background-color var(--ig-duration-fast) var(--ig-ease);
+}
+
+.workspace-tab-header:not(.is-active):hover {
+  background-color: var(--ig-surface-3);
+}
+
+.workspace-tab-header-inner-close-button {
+  border-radius: var(--ig-radius-sm);
+}
+
+// The view header (breadcrumb row above a note) is navigation, not content.
+.view-header {
+  background: transparent;
+  border: none;
+}
+
+.view-header-title,
+.view-header-breadcrumb {
+  font-family: var(--font-interface-theme);
+  font-size: 0.85em;
+  color: var(--ig-text-muted);
+}
+
+// --- File explorer and outline ----------------------------------------------
+
+body {
+  --nav-item-color: var(--ig-text-muted);
+  --nav-item-color-hover: var(--ig-text-normal);
+  --nav-item-color-active: var(--ig-text-normal);
+  --nav-item-color-selected: var(--ig-text-normal);
+  --nav-item-background-hover: var(--ig-surface-3);
+  --nav-item-background-active: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.14);
+  --nav-item-background-selected: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.1);
+  --nav-item-weight-active: 550;
+  --nav-indentation-guide-color: var(--ig-border);
+}
+
+.nav-file-title,
+.nav-folder-title {
+  border-radius: var(--ig-radius-sm);
+  transition: background-color var(--ig-duration-fast) var(--ig-ease);
+}
+
+.nav-header {
+  padding: var(--ig-space-1) var(--ig-space-2);
+}
+
+// Section headings in the sidebar are labels, matching h6 in the note body.
+.nav-folder.mod-root > .nav-folder-title,
+.tree-item-self.is-clickable.mod-collapsible > .tree-item-inner {
+  font-family: var(--font-interface-theme);
+}
+
+// --- Search -----------------------------------------------------------------
+
+.search-input-container input,
+.search-input-container input:focus {
+  background-color: var(--ig-surface-3);
+  border: var(--ig-hairline) solid var(--ig-border);
+  border-radius: var(--ig-radius-md);
+}
+
+.search-result-file-title {
+  font-weight: 550;
+  color: var(--ig-text-normal);
+}
+
+.search-result-file-matched-text {
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.2);
+  border-radius: 2px;
+}
+
+.search-result-file-match {
+  border-radius: var(--ig-radius-sm);
+}
+
+// --- Status bar -------------------------------------------------------------
+
+.status-bar {
+  border-block-start: var(--ig-hairline) solid var(--ig-border);
+  font-size: 0.8em;
+  color: var(--ig-text-faint);
+}
+
+.status-bar-item {
+  color: var(--ig-text-faint);
+}
+
+// --- Scrollbars -------------------------------------------------------------
+// Present but recessive; they gain contrast on hover rather than always sitting
+// at full strength.
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--ig-border-strong);
+  border-radius: 100px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--ig-text-faint);
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+// --- Settings ---------------------------------------------------------------
+
+.vertical-tab-header,
+.vertical-tab-content-container {
+  background-color: var(--ig-surface-1);
+}
+
+.vertical-tab-nav-item {
+  border-radius: var(--ig-radius-sm);
+}
+
+.vertical-tab-nav-item.is-active {
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.14);
+  color: var(--ig-text-normal);
+}
+
+.setting-item {
+  border-block-start: var(--ig-hairline) solid var(--ig-border);
+  padding: var(--ig-space-4) 0;
+}
+
+.setting-item-name {
+  font-weight: 550;
+}
+
+.setting-item-description {
+  color: var(--ig-text-muted);
+}
+
+// --- Buttons ----------------------------------------------------------------
+
+button:not(.clickable-icon) {
+  border-radius: var(--ig-radius-sm);
+  border: var(--ig-hairline) solid var(--ig-border);
+  background-color: var(--ig-surface-3);
+  box-shadow: none;
+  font-weight: 500;
+  transition:
+    background-color var(--ig-duration-fast) var(--ig-ease),
+    border-color var(--ig-duration-fast) var(--ig-ease);
+}
+
+button:not(.clickable-icon):hover {
+  background-color: var(--ig-surface-4);
+  border-color: var(--ig-border-strong);
+}
+
+button.mod-cta {
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  border-color: transparent;
+  color: var(--ig-text-on-accent);
+}
+
+// --- Graph ------------------------------------------------------------------
+// The graph draws to canvas, so it reads these variables rather than CSS rules.
+
+body {
+  --graph-line: var(--ig-border);
+  --graph-node: var(--ig-text-muted);
+  --graph-node-focused: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  --graph-node-tag: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.7);
+  --graph-node-unresolved: var(--ig-text-faint);
+}
+
+// --- Canvas -----------------------------------------------------------------
+// Canvas cards are raised content; they stay opaque so user-drawn material is
+// never composited over a translucent backdrop.
+
+.canvas-node-content,
+.canvas-node-container {
+  border-radius: var(--ig-radius-md);
+}
+
+.canvas-node .canvas-node-container {
+  background-color: var(--ig-surface-2);
+  border: var(--ig-hairline) solid var(--ig-border);
+  box-shadow: var(--ig-shadow-sm);
+}
+
+.canvas-node.is-selected .canvas-node-container {
+  border-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
+
+.canvas-controls .canvas-control-item {
+  border-radius: var(--ig-radius-sm);
+  background-color: var(--ig-surface-4);
+  border: var(--ig-hairline) solid var(--ig-border);
+}
+
+// --- Bases ------------------------------------------------------------------
+// Added in Obsidian 1.9; most older themes leave it unstyled.
+
+.bases-view,
+.bases-table-view {
+  font-family: var(--font-interface-theme);
+}
+
+.bases-table-view th,
+.bases-tr .bases-td {
+  border-color: var(--ig-border);
+}
+
+.bases-table-view th {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: var(--ig-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.bases-cards-item {
+  background-color: var(--ig-surface-3);
+  border: var(--ig-hairline) solid var(--ig-border);
+  border-radius: var(--ig-radius-md);
+}
+
+// --- Backlinks and outgoing links -------------------------------------------
+
+.backlink-pane .tree-item-self,
+.outgoing-link-pane .tree-item-self {
+  border-radius: var(--ig-radius-sm);
+}
+
+.search-result-container .tree-item-inner {
+  color: var(--ig-text-muted);
+}

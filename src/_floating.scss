@@ -1,0 +1,155 @@
+// ---------------------------------------------------------------------------
+// Floating layers (L4)
+// ---------------------------------------------------------------------------
+// This is the only file in the theme that uses backdrop-filter, and the budget
+// (12 rules, enforced by scripts/budget-check.mjs) is spent here deliberately.
+//
+// L4 is the one place blur is both cheap and honest:
+//   - cheap, because these surfaces are small, short-lived, and never scrolled
+//   - honest, because what they blur is Obsidian's own content underneath, so
+//     the effect is identical on macOS, Windows, and iOS — unlike base
+//     surfaces, where only macOS has anything behind the window to blur
+//
+// Every rule pairs -webkit-backdrop-filter with the unprefixed property: iOS
+// WebKit still requires the prefix, and mobile is a first-class target.
+// ---------------------------------------------------------------------------
+
+// One mixin, so the glass recipe exists in exactly one place and the budget
+// counts what is actually emitted.
+@mixin glass-surface {
+  background-color: var(--ig-surface-4);
+  -webkit-backdrop-filter: blur(var(--ig-blur)) saturate(var(--ig-blur-saturate));
+  backdrop-filter: blur(var(--ig-blur)) saturate(var(--ig-blur-saturate));
+  border: var(--ig-hairline) solid var(--ig-border);
+  box-shadow: var(--ig-shadow-lg);
+}
+
+// --- Modals -----------------------------------------------------------------
+
+.modal {
+  @include glass-surface;
+
+  border-radius: var(--ig-radius-xl);
+}
+
+// The dimmer stays light: a heavy scrim buries the glass it is meant to reveal.
+.modal-bg {
+  background-color: hsl(var(--ig-h) 20% 8% / 0.18);
+}
+
+.modal-title {
+  font-weight: var(--ig-weight-heading);
+  letter-spacing: var(--ig-tracking-title);
+}
+
+.modal-close-button {
+  border-radius: var(--ig-radius-sm);
+  transition: background-color var(--ig-duration-fast) var(--ig-ease);
+}
+
+// --- Command palette, quick switcher, and every suggestion popup -------------
+// These share .suggestion-container / .prompt, so one treatment covers the
+// palette, quick switcher, tag autocomplete, and link autocomplete.
+
+.prompt,
+.suggestion-container {
+  @include glass-surface;
+
+  border-radius: var(--ig-radius-lg);
+  padding: var(--ig-space-1);
+}
+
+.prompt-input {
+  font-size: 1.05em;
+  border: none;
+  background: transparent;
+}
+
+.prompt-input-container {
+  border-block-end: var(--ig-hairline) solid var(--ig-border);
+  margin-block-end: var(--ig-space-1);
+}
+
+.suggestion-item,
+.prompt-results .suggestion-item {
+  border-radius: var(--ig-radius-sm);
+  padding: var(--ig-space-2) var(--ig-space-3);
+}
+
+// Selection is a filled row rather than an outline — outlines read as focus
+// rings, and there is already a real focus ring elsewhere.
+.suggestion-item.is-selected {
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.14);
+}
+
+.suggestion-hotkey,
+.suggestion-note {
+  color: var(--ig-text-faint);
+}
+
+// --- Menus ------------------------------------------------------------------
+
+.menu {
+  @include glass-surface;
+
+  border-radius: var(--ig-radius-md);
+  padding: var(--ig-space-1);
+}
+
+.menu-item {
+  border-radius: var(--ig-radius-sm);
+  padding: var(--ig-space-1) var(--ig-space-3);
+}
+
+.menu-item:not(.is-disabled):hover,
+.menu-item.selected {
+  background-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.14);
+}
+
+.menu-separator {
+  border-block-start: var(--ig-hairline) solid var(--ig-border);
+  margin-block: var(--ig-space-1);
+}
+
+// --- Hover previews and popovers --------------------------------------------
+
+.popover.hover-popover {
+  @include glass-surface;
+
+  border-radius: var(--ig-radius-lg);
+}
+
+// --- Tooltips ---------------------------------------------------------------
+// Small, frequent, and transient: opacity alone, no blur. Blurring something
+// this short-lived costs a compositor layer for no perceptible gain.
+
+.tooltip {
+  background-color: var(--ig-surface-4);
+  border: var(--ig-hairline) solid var(--ig-border);
+  border-radius: var(--ig-radius-sm);
+  box-shadow: var(--ig-shadow-md);
+  color: var(--ig-text-normal);
+  font-size: 0.85em;
+}
+
+.tooltip .tooltip-arrow {
+  display: none;
+}
+
+// --- Focus ------------------------------------------------------------------
+// One consistent ring everywhere, derived from the user's accent.
+
+body {
+  --background-modifier-form-field: var(--ig-surface-3);
+  --input-shadow: none;
+  --input-focus-border-color: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+.clickable-icon:focus-visible {
+  outline: 2px solid hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.55);
+  outline-offset: 1px;
+}
