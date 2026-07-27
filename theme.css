@@ -14,7 +14,6 @@ body {
   --ig-duration: 160ms;
   --ig-blur: 20px;
   --ig-blur-saturate: 180%;
-  --ig-opacity-floor: 0.82;
   --ig-hairline: 1px;
 }
 
@@ -35,7 +34,6 @@ body.theme-light {
   --ig-shadow-sm: 0 1px 2px hsl(220 20% 20% / 0.06);
   --ig-shadow-md: 0 4px 12px hsl(220 20% 20% / 0.08);
   --ig-shadow-lg: 0 12px 32px hsl(220 20% 20% / 0.12);
-  --ig-glass-tint: 255, 255, 255;
 }
 
 body.theme-dark {
@@ -55,7 +53,6 @@ body.theme-dark {
   --ig-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
   --ig-shadow-md: 0 4px 12px hsl(0 0% 0% / 0.32);
   --ig-shadow-lg: 0 12px 32px hsl(0 0% 0% / 0.44);
-  --ig-glass-tint: 0, 0, 0;
 }
 
 body {
@@ -69,14 +66,15 @@ body {
 body {
   --ig-translucency: 1;
   --ig-float-translucency: 1;
-  --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.6 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.54 * var(--ig-translucency));
-  --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
+  --ig-user-glass: 1;
+  --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency) * var(--ig-user-glass));
+  --ig-a-l1: calc(1 - 0.6 * var(--ig-translucency) * var(--ig-user-glass));
+  --ig-a-l2: calc(1 - 0.54 * var(--ig-translucency) * var(--ig-user-glass));
+  --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency) * var(--ig-user-glass));
 }
 
-body.is-translucent.theme-light {
-  --ig-translucency: 0.8;
+body:not(.is-translucent) {
+  background-color: hsl(var(--ig-h), var(--ig-s), var(--ig-l0-l));
 }
 
 body.is-mobile {
@@ -931,6 +929,11 @@ body.theme-dark {
 .suggestion-container > * {
   position: relative;
   z-index: 1;
+}
+
+.workspace {
+  position: relative;
+  isolation: isolate;
 }
 
 .workspace::before {

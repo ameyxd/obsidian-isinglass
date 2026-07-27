@@ -15,23 +15,30 @@
 // So `.is-translucent` appears on macOS and nowhere else — the settings row
 // itself is gated on isDarwin(), and Windows users never see the toggle.
 //
-// That gives three render paths for one design language:
+// The design does NOT depend on that toggle. On macOS 26 the vibrancy material
+// turned out to be static (dragging the window across the desktop changes
+// nothing behind it), so revealing it only dimmed the interface. Instead the
+// theme paints its own backdrop (the aurora, _glass.scss) and every platform
+// frosts over that. Glass is on by default everywhere; what varies per path is
+// only what sits at the very bottom of the stack:
 //
-//   A  body.is-translucent      macOS. Window is #00000000 behind a system
-//                               vibrancy layer, so CSS alpha reveals the real
-//                               desktop wallpaper. No backdrop-filter needed
-//                               on base surfaces — the OS is already blurring.
+//   default                     Windows, Linux, mobile, macOS with the toggle
+//                               off. The theme paints an OPAQUE floor on body,
+//                               then aurora, then the alpha'd surfaces. Nothing
+//                               below the floor can influence the result.
 //
-//   B  everything else desktop  Windows, Linux, and macOS with translucency
-//                               off. The window is opaque; there is nothing
-//                               behind the app to blur. Depth comes from
-//                               luminance steps and hairlines instead.
+//   body.is-translucent         macOS with the toggle on. Obsidian clears the
+//                               window and chrome, so the floor is the OS
+//                               material (static on macOS 26; real vibrancy on
+//                               older versions — either way a mode-polarity
+//                               wash the checker bounds with MATERIAL_WEIGHT).
 //
-//   C  body.is-mobile           As B, plus touch sizing and safe areas.
+//   system/theme mismatch       macOS toggle on, but the OS appearance opposes
+//                               Obsidian's theme. The material fights the text;
+//                               translucency is scaled to 0.35 and the chrome
+//                               gets an opaque surface back.
 //
-// In every tier, floating layers (L4) still use backdrop-filter — there it
-// blurs Obsidian's *own* content underneath, which reads as real glass on all
-// three platforms.
+// Floating layers (L4) backdrop-blur Obsidian's own content in every path.
 // ---------------------------------------------------------------------------
 
 // --- Tier B / C: the opaque default ----------------------------------------
@@ -54,50 +61,51 @@ body {
   // Floating layers are translucent in every tier, so this stays independent.
   --ig-float-translucency: 1;
 
-  // Per-level alpha. Each level's second term is how much transparency that
+  // The user's Style Settings slider. A separate multiplier, NOT a rewrite of
+  // --ig-translucency: Style Settings injects its values on
+  // body.css-settings-manager, which would out-compete the mobile and
+  // appearance-mismatch reductions below and let a slider undo a safety
+  // fallback. As a multiplier it composes with them and can only reduce.
+  --ig-user-glass: 1;
+
+  // Per-level alpha. Each level's coefficient is how much transparency that
   // level is allowed at full strength — L2 (the note surface) gets the least,
   // because that is where body text lives.
-  // L0-L2 sit against the macOS vibrancy material in tier A. contrast-check
-  // models that material rather than a raw wallpaper (see its header), which is
-  // what makes these numbers viable: an earlier, wrong model capped L0 at 0.12
-  // and made the theme look flat. These are AT the ceiling — 0.48/0.45/0.42
-  // fails — because on macOS 26 the vibrancy material washes out far more than
-  // expected, so anything below the ceiling reads as barely translucent.
+  //
+  // These coefficients are AT the ceiling contrast-check allows against the
+  // aurora backdrop swept across all 360 accent hues (0.72/0.68/0.60 fails).
+  // They became possible when the backdrop became the theme's own: the checker
+  // no longer defends against an unknowable wallpaper, only against a known
+  // field plus a bounded OS material.
   //
   // L4 is different — it always composites over app content, so contrast is not
   // its binding constraint and its value is a design choice: glassy enough to
   // read as glass, opaque enough that blurred text underneath does not compete
   // with the palette's own labels.
-  --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency));
-  --ig-a-l1: calc(1 - 0.6 * var(--ig-translucency));
-  --ig-a-l2: calc(1 - 0.54 * var(--ig-translucency));
-  --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency));
+  --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency) * var(--ig-user-glass));
+  --ig-a-l1: calc(1 - 0.6 * var(--ig-translucency) * var(--ig-user-glass));
+  --ig-a-l2: calc(1 - 0.54 * var(--ig-translucency) * var(--ig-user-glass));
+  --ig-a-l4: calc(1 - 0.28 * var(--ig-float-translucency) * var(--ig-user-glass));
 }
 
-// --- Tier A: true glass (macOS only) ---------------------------------------
+// --- The opaque floor -------------------------------------------------------
+// Everywhere except macOS-with-toggle-on, the theme guarantees the bottom of
+// the stack. Without this, every layer above carries alpha and the final colour
+// depends on the Electron/WebView window background — a surface the theme does
+// not control and contrast-check cannot model. (This is the same
+// layers-multiply failure as the old tier A stacking bug, recurring one level
+// down: it shipped for a while with the checker green because the checker
+// assumed an opaque L0 substrate that did not actually exist.)
 
-// Light and dark are not symmetric here, so they do not get the same value.
-//
-// In dark mode a dark surface lets bright areas of the backdrop punch through,
-// so glass reads clearly at full strength.
-//
-// In light mode the surface is already white and the light vibrancy material is
-// near-white, so transparency has almost nothing to reveal — it only makes the
-// note *greyer*. Past a point that is a worse trade: a dimmed page in exchange
-// for an effect nobody can see. Light mode therefore runs lower by default, and
-// the Style Settings slider lets anyone who disagrees push it back up.
-// Kept only so that anyone on an older macOS, where vibrancy genuinely samples
-// the desktop, still gets the real thing layered over ours. It is no longer
-// what the design depends on.
-body.is-translucent.theme-light {
-  --ig-translucency: 0.8;
+body:not(.is-translucent) {
+  background-color: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
 }
 
-// --- Tier C: mobile ---------------------------------------------------------
-// `.is-translucent` is never present on mobile, so tier C already inherits the
-// opaque baseline. What it changes is the blur budget: WKWebView pays more for
-// backdrop-filter than Electron does, so floating layers blur less and lean on
-// opacity instead.
+// --- Mobile -----------------------------------------------------------------
+// `.is-translucent` never appears on mobile, so the opaque floor above already
+// applies. What changes is the budget: WKWebView pays more for backdrop-filter
+// than Electron does, so floating layers blur less and lean on opacity, and
+// base surfaces run less translucent on small screens.
 
 body.is-mobile {
   --ig-blur: 12px;

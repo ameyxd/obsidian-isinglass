@@ -114,6 +114,14 @@ body.theme-dark {
 // The payoff is that this behaves identically on macOS, Windows, and iOS — the
 // glass identity stops being a macOS-only effect that degrades everywhere else.
 
+// `.workspace` must form its own stacking context, or the negative-z pseudo
+// falls behind an ancestor's background and silently vanishes — stacking
+// assumptions are how every previous translucency bug survived a green build.
+.workspace {
+  position: relative;
+  isolation: isolate;
+}
+
 .workspace::before {
   content: '';
   position: absolute;

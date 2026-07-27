@@ -13,8 +13,8 @@
 //
 // The lightness values below are not arbitrary. They are the output of
 // scripts/contrast-check.mjs, which composites each text token over each
-// surface at each tier's alpha against both a pure-black and a pure-white
-// wallpaper. See .claude/FEATURE_SPECS.md.
+// surface at each tier's alpha, against the theme's own aurora backdrop swept
+// across every accent hue, on top of the bounded OS material extremes.
 // ---------------------------------------------------------------------------
 
 body {
@@ -47,11 +47,6 @@ body {
   --ig-blur: 20px;
   --ig-blur-saturate: 180%;
 
-  // Opacity floor. No tier and no Style Settings value may drive a text-bearing
-  // surface below this. Guarded in _a11y.scss and asserted by contrast-check.
-  --ig-opacity-floor: 0.82;
-
-  // Hairline separators read better than 1px borders on glass.
   // 1px, not 0.5px. A half-pixel hairline is crisp on a Retina Mac and rounds
   // away to nothing on the non-Retina displays plenty of Windows users have.
   // Delicacy comes from the border *colour*, which survives rounding.
@@ -70,11 +65,10 @@ body.theme-light {
 
   // Surface lightness, L0 (deepest) → L4 (highest).
   //
-  // The steps are wide on purpose. Contrast caps base translucency near 10–12%,
-  // so very little wallpaper actually comes through — which means depth cannot
-  // come from transparency. It comes from the ladder instead: ~3.5 points from
-  // workspace to sidebar and ~4.5 from sidebar to note, so the interface reads
-  // as stacked sheets whether or not anything shows through them.
+  // The steps are wide on purpose: ~3.5 points from workspace to sidebar and
+  // ~4.5 from sidebar to note, so the interface reads as stacked sheets even
+  // where the aurora backdrop happens to be quiet. Depth comes from the ladder
+  // first and translucency second.
   --ig-l0-l: 92%;
   --ig-l1-l: 95.5%;
   --ig-l2-l: 100%;
@@ -96,9 +90,6 @@ body.theme-light {
   --ig-shadow-sm: 0 1px 2px hsl(220 20% 20% / 0.06);
   --ig-shadow-md: 0 4px 12px hsl(220 20% 20% / 0.08);
   --ig-shadow-lg: 0 12px 32px hsl(220 20% 20% / 0.12);
-
-  // Tint laid over glass so wallpaper does not fully dictate surface colour.
-  --ig-glass-tint: 255, 255, 255;
 }
 
 // ---------------------------------------------------------------------------
@@ -131,8 +122,6 @@ body.theme-dark {
   --ig-shadow-sm: 0 1px 2px hsl(0 0% 0% / 0.24);
   --ig-shadow-md: 0 4px 12px hsl(0 0% 0% / 0.32);
   --ig-shadow-lg: 0 12px 32px hsl(0 0% 0% / 0.44);
-
-  --ig-glass-tint: 0, 0, 0;
 }
 
 // ---------------------------------------------------------------------------
