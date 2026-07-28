@@ -152,9 +152,10 @@ function auroraExtremes(modeName, base) {
 // still said desktop runs opaque after the CSS default had moved to 1, which is
 // precisely the CSS/checker drift this project keeps paying for.
 //
-// MATERIAL_SCALE mirrors --ig-material-scale: how far surfaces open when a
-// real OS material (macOS vibrancy / Windows Mica) is behind the window.
-const MATERIAL_SCALE = 0.8;
+// MATERIAL_SCALE mirrors --ig-material-scale (per theme mode in _tiers.scss):
+// how far surfaces open when a real OS material is behind the window. Each
+// mode gets its own ceiling — their material extremes are not symmetric.
+const MATERIAL_SCALE = { light: 0.8, dark: 1.0 };
 
 // A live material blends its own appearance tint (dominant) with whatever is
 // behind the window. Modelled as tint at 0.6 weight over black/white wallpaper
@@ -176,9 +177,13 @@ function materialExtremes(modeName) {
 
 const TIERS = [
   { id: 'desktop', translucency: 1, float: 1 },
-  { id: 'material-window', translucency: MATERIAL_SCALE, float: 1, material: true },
+  { id: 'material-window', translucency: 'material', float: 1, material: true },
   { id: 'mobile', translucency: 0.6, float: 0.7 },
 ];
+
+function resolveTranslucency(tier, mode) {
+  return tier.translucency === 'material' ? MATERIAL_SCALE[mode.name] : tier.translucency;
+}
 
 // text token -> minimum ratio. Body and UI text must clear AA; `faint` is used
 // only for decorative metadata and is held to the large-text threshold.
@@ -201,9 +206,9 @@ const rows = [];
 for (const mode of [readMode('light'), readMode('dark')]) {
   for (const tier of TIERS) {
     const alpha = {
-      l0: 1 - allowance.l0 * tier.translucency,
-      l1: 1 - allowance.l1 * tier.translucency,
-      l2: 1 - allowance.l2 * tier.translucency,
+      l0: 1 - allowance.l0 * resolveTranslucency(tier, mode),
+      l1: 1 - allowance.l1 * resolveTranslucency(tier, mode),
+      l2: 1 - allowance.l2 * resolveTranslucency(tier, mode),
       l3: 1,
       l4: 1 - allowance.l4 * tier.float,
     };

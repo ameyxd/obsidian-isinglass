@@ -66,10 +66,21 @@ body {
 
   // How far surfaces open up when a real OS material is behind the window
   // (macOS vibrancy via the toggle, or Windows Mica/Acrylic via Pseudo Mica).
-  // Set by contrast-check sweep: 0.8 is the AA ceiling against a
+  // Per-mode, set by contrast-check sweep to each mode's AA ceiling against a
   // MATCHED-APPEARANCE material (its own tint at 0.6 weight over black/white
-  // extremes); 0.85 fails. The unmatched material is clamped, not survived.
+  // extremes). The unmatched material is clamped, not survived.
   --ig-material-scale: 0.8;
+
+  // Per-mode overrides live right below the mode token blocks would be tidier,
+  // but Style Settings and the checker both read body-level declarations, so
+  // the per-mode values are set here via the theme classes.
+  &.theme-dark {
+    --ig-material-scale: 1.0;
+  }
+
+  &.theme-light {
+    --ig-material-scale: 0.8;
+  }
 
   // Per-level alpha. Each level's coefficient is how much transparency that
   // level is allowed at full strength — L2 (the note surface) gets the least,

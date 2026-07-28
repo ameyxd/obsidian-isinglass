@@ -45,8 +45,8 @@ body.theme-dark {
   --ig-l3-l: 19%;
   --ig-l4-l: 21%;
   --ig-text-normal: hsl(220 15% 92%);
-  --ig-text-muted: hsl(220 12% 75%);
-  --ig-text-faint: hsl(220 10% 62%);
+  --ig-text-muted: hsl(220 12% 80%);
+  --ig-text-faint: hsl(220 10% 68%);
   --ig-text-on-accent: hsl(220 20% 10%);
   --ig-border: hsl(220 12% 26%);
   --ig-border-strong: hsl(220 12% 36%);
@@ -68,6 +68,14 @@ body {
   --ig-float-translucency: 1;
   --ig-user-glass: 1;
   --ig-material-scale: 0.8;
+}
+body.theme-dark {
+  --ig-material-scale: 1.0;
+}
+body.theme-light {
+  --ig-material-scale: 0.8;
+}
+body {
   --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency) * var(--ig-user-glass));
   --ig-a-l1: calc(1 - 0.6 * var(--ig-translucency) * var(--ig-user-glass));
   --ig-a-l2: calc(1 - 0.54 * var(--ig-translucency) * var(--ig-user-glass));
@@ -1065,11 +1073,11 @@ settings:
   -
     id: ig-user-glass
     title: Glass intensity
-    description: How translucent the workspace surfaces are. The maximum is the highest value that passes WCAG AA contrast.
+    description: How translucent the workspace surfaces are. 1.0 is the highest value verified against WCAG AA contrast; values above it trade legibility for glass and can drop below AA on some backdrops.
     type: variable-number-slider
     default: 1
     min: 0
-    max: 1
+    max: 1.3
     step: 0.05
   -
     id: ig-user-aurora
