@@ -170,10 +170,23 @@ body.theme-dark {
 }
 
 body {
-  // The field ships ON. The slider (Style Settings "Accent tint") can quiet it,
-  // but a glass theme with no field is a flat theme — that state is reached via
-  // reduced-transparency/high-contrast, which also go opaque.
+  // The field ships ON. The slider (Style Settings "Luminous field") can quiet
+  // it, but a glass theme with no field is a flat theme — that state is reached
+  // via reduced-transparency/high-contrast, which also go opaque.
   --ig-user-aurora: 1;
+
+  // REAL window transparency, applied by the Isinglass Companion plugin via
+  // Electron setOpacity — the one see-through mechanism Obsidian's window bug
+  // does not block. The whole window fades together (text included); that is
+  // the physics of window-server compositing, and why the floor sits at 0.8
+  // in the companion. Without the plugin this variable is inert and the theme
+  // simply stays painted glass.
+  --ig-window-opacity: 0.88;
+}
+
+body.theme-light {
+  // A white window ghosts faster than a dark one at equal opacity.
+  --ig-window-opacity: 0.92;
 }
 
 body.theme-light {
@@ -201,7 +214,7 @@ body.theme-dark {
   // more visible "behind" = the window reads more transparent at the same
   // pane alpha.
   --ig-blob-l: 44%;
-  --ig-blob-a: 0.58;
+  --ig-blob-a: 0.45;
   --ig-veil: linear-gradient(
     180deg,
     hsl(var(--ig-h) var(--ig-s) 18% / 0.5) 0%,

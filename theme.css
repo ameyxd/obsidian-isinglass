@@ -957,6 +957,11 @@ body.theme-dark {
 
 body {
   --ig-user-aurora: 1;
+  --ig-window-opacity: 0.88;
+}
+
+body.theme-light {
+  --ig-window-opacity: 0.92;
 }
 
 body.theme-light {
@@ -971,7 +976,7 @@ body.theme-light {
 
 body.theme-dark {
   --ig-blob-l: 44%;
-  --ig-blob-a: 0.58;
+  --ig-blob-a: 0.45;
   --ig-veil: linear-gradient(
     180deg,
     hsl(var(--ig-h) var(--ig-s) 18% / 0.5) 0%,
@@ -1127,6 +1132,15 @@ settings:
     max: 1
     step: 0.05
   -
+    id: ig-window-opacity
+    title: Window transparency
+    description: Real see-through applied to the whole window, including text. Requires the Isinglass Companion plugin; 1.0 is solid.
+    type: variable-number-slider
+    default: 0.9
+    min: 0.8
+    max: 1
+    step: 0.01
+  -
     id: ig-blur
     title: Glass blur
     description: How strongly floating surfaces such as menus and the command palette blur the content behind them.
@@ -1248,6 +1262,7 @@ body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
     --ig-blur: 0px;
     --ig-blur-saturate: 100%;
     --ig-sheet-a: 0;
+    --ig-window-opacity: 1;
   }
   body:not(.is-mobile) .workspace-split.mod-left-split,
   body:not(.is-mobile) .workspace-split.mod-right-split,

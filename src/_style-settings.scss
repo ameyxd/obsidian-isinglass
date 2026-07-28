@@ -47,6 +47,15 @@ settings:
     max: 1
     step: 0.05
   -
+    id: ig-window-opacity
+    title: Window transparency
+    description: Real see-through applied to the whole window, including text. Requires the Isinglass Companion plugin; 1.0 is solid.
+    type: variable-number-slider
+    default: 0.9
+    min: 0.8
+    max: 1
+    step: 0.01
+  -
     id: ig-blur
     title: Glass blur
     description: How strongly floating surfaces such as menus and the command palette blur the content behind them.
