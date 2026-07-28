@@ -233,18 +233,23 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     } else {
       const floor = mode.surface.l0;
       const b = block(`body.theme-${mode.name}`);
-      const toplightL = parseFloat(decl(b, '--ig-toplight-l'));
-      if (Number.isNaN(toplightL)) {
-        throw new Error(`contrast-check: missing --ig-toplight-l for theme-${mode.name}`);
+      // The veil is a per-mode gradient; every hsl() stop in it is a possible
+      // backdrop tone. Parsed from the compiled CSS so the checker cannot
+      // drift from what ships.
+      const veil = decl(b, '--ig-veil') ?? '';
+      // Lightness is always the value immediately before the alpha slash.
+      const stops = [...veil.matchAll(/([\d.]+)%\s*\/\s*([\d.]+)\)/g)];
+      if (!stops.length) {
+        throw new Error(`contrast-check: no parsable stops in --ig-veil for theme-${mode.name}`);
       }
-      const h = parseFloat(decl(b, '--ig-h'));
-      const s = parseFloat(decl(b, '--ig-s'));
-      baseBackdrops = {
-        'bare floor': floor,
-        // 0.5 must match the top-light gradient alpha in _glass.scss.
-        'top-light on floor': composite(hslToRgb(h, s, toplightL), 0.5, floor),
-        ...auroraExtremes(mode.name, floor),
-      };
+      baseBackdrops = { 'bare floor': floor, ...auroraExtremes(mode.name, floor) };
+      stops.forEach((m, i) => {
+        baseBackdrops[`veil stop ${i + 1} on floor`] = composite(
+          hslToRgb(parseFloat(decl(b, '--ig-h')), 10, parseFloat(m[1])),
+          parseFloat(m[2]),
+          floor
+        );
+      });
     }
 
     const composited = (lvl, bg) =>

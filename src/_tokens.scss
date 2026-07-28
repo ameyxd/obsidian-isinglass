@@ -69,8 +69,11 @@ body.theme-light {
   // ~4.5 from sidebar to note, so the interface reads as stacked sheets even
   // where the aurora backdrop happens to be quiet. Depth comes from the ladder
   // first and translucency second.
-  --ig-l0-l: 92%;
-  --ig-l1-l: 95.5%;
+  // L0 sits well below white: the note sheet only reads as GLASS if the field
+  // around it is visibly darker — white-on-white was "light mode does not
+  // work" three times running.
+  --ig-l0-l: 87%;
+  --ig-l1-l: 93%;
   --ig-l2-l: 100%;
   --ig-l3-l: 97%;
   --ig-l4-l: 98%;
@@ -79,8 +82,8 @@ body.theme-light {
   // clear AA against an L0/L1 surface composited over a *black* wallpaper in
   // tier A. Lightening either one fails contrast-check.
   --ig-text-normal: hsl(220 15% 17%);
-  --ig-text-muted: hsl(220 12% 32%);
-  --ig-text-faint: hsl(220 10% 41%);
+  --ig-text-muted: hsl(220 12% 30%);
+  --ig-text-faint: hsl(220 10% 39%);
   --ig-text-on-accent: hsl(0 0% 100%);
 
   --ig-border: hsl(220 15% 84%);

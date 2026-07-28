@@ -20,14 +20,14 @@ body {
 body.theme-light {
   --ig-h: 220;
   --ig-s: 16%;
-  --ig-l0-l: 92%;
-  --ig-l1-l: 95.5%;
+  --ig-l0-l: 87%;
+  --ig-l1-l: 93%;
   --ig-l2-l: 100%;
   --ig-l3-l: 97%;
   --ig-l4-l: 98%;
   --ig-text-normal: hsl(220 15% 17%);
-  --ig-text-muted: hsl(220 12% 32%);
-  --ig-text-faint: hsl(220 10% 41%);
+  --ig-text-muted: hsl(220 12% 30%);
+  --ig-text-faint: hsl(220 10% 39%);
   --ig-text-on-accent: hsl(0 0% 100%);
   --ig-border: hsl(220 15% 84%);
   --ig-border-strong: hsl(220 15% 74%);
@@ -952,7 +952,7 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(90% 70% at 12% -5%, hsl(var(--ig-h), 8%, var(--ig-blob-l), calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%, transparent 55%), radial-gradient(70% 60% at 92% 18%, hsl(var(--ig-h), 6%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%, transparent 60%), radial-gradient(85% 70% at 55% 108%, hsl(var(--ig-h), 8%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%, transparent 55%), linear-gradient(180deg, hsl(var(--ig-h), var(--ig-s), var(--ig-toplight-l), 0.5) 0%, transparent 45%);
+  background: radial-gradient(90% 70% at 12% -5%, hsl(var(--ig-h), 8%, var(--ig-blob-l), calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%, transparent 55%), radial-gradient(70% 60% at 92% 18%, hsl(var(--ig-h), 6%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%, transparent 60%), radial-gradient(85% 70% at 55% 108%, hsl(var(--ig-h), 8%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%, transparent 55%), var(--ig-veil);
 }
 
 body {
@@ -960,15 +960,23 @@ body {
 }
 
 body.theme-light {
-  --ig-blob-l: 78%;
-  --ig-blob-a: 0.55;
-  --ig-toplight-l: 100%;
+  --ig-blob-l: 64%;
+  --ig-blob-a: 0.7;
+  --ig-veil: linear-gradient(
+    135deg,
+    hsl(var(--ig-h) 10% 97% / 0.7) 0%,
+    hsl(var(--ig-h) 10% 80% / 0.55) 100%
+  );
 }
 
 body.theme-dark {
-  --ig-blob-l: 38%;
-  --ig-blob-a: 0.5;
-  --ig-toplight-l: 18%;
+  --ig-blob-l: 44%;
+  --ig-blob-a: 0.58;
+  --ig-veil: linear-gradient(
+    180deg,
+    hsl(var(--ig-h) var(--ig-s) 18% / 0.5) 0%,
+    transparent 45%
+  );
 }
 
 .workspace::after {
@@ -997,7 +1005,7 @@ body:not(.is-mobile) .workspace-split.mod-root {
 }
 
 body.theme-light {
-  --ig-sheet-a: 0.28;
+  --ig-sheet-a: 0.1;
 }
 
 body.theme-dark {

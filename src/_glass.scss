@@ -166,11 +166,7 @@ body.theme-dark {
         calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%,
       transparent 55%
     ),
-    linear-gradient(
-      180deg,
-      hsl(var(--ig-h) var(--ig-s) var(--ig-toplight-l) / 0.5) 0%,
-      transparent 45%
-    );
+    var(--ig-veil);
 }
 
 body {
@@ -181,17 +177,36 @@ body {
 }
 
 body.theme-light {
-  // Light glass reads through slightly DARKER luminous blobs on a white field.
-  --ig-blob-l: 78%;
-  --ig-blob-a: 0.55;
-  --ig-toplight-l: 100%;
+  // Light glass reads through DARKER blobs on a white field, and the spread
+  // must be as loud as dark mode's: 78% blobs against a 92% floor was a
+  // 14-point whisper that the white sheet fill then erased — which is exactly
+  // what "light mode does not work" looked like. 64% is a 28-point spread.
+  // The toplight sits slightly BELOW the floor here: a brighter-still top is
+  // invisible on white, a faint veil reads as depth.
+  --ig-blob-l: 64%;
+  --ig-blob-a: 0.7;
+  // A diagonal light sweep across the WHOLE window. Corner blobs alone leave
+  // the note column flat in light mode — their tails are 2-3 lightness points
+  // there, invisible against white. Light falling across the pane is what a
+  // real frosted window shows.
+  --ig-veil: linear-gradient(
+    135deg,
+    hsl(var(--ig-h) 10% 97% / 0.7) 0%,
+    hsl(var(--ig-h) 10% 80% / 0.55) 100%
+  );
 }
 
 body.theme-dark {
-  // Dark glass reads through slightly LIGHTER blobs on a black field.
-  --ig-blob-l: 38%;
-  --ig-blob-a: 0.5;
-  --ig-toplight-l: 18%;
+  // Dark glass reads through LIGHTER blobs on a black field. Brighter blobs =
+  // more visible "behind" = the window reads more transparent at the same
+  // pane alpha.
+  --ig-blob-l: 44%;
+  --ig-blob-a: 0.58;
+  --ig-veil: linear-gradient(
+    180deg,
+    hsl(var(--ig-h) var(--ig-s) 18% / 0.5) 0%,
+    transparent 45%
+  );
 }
 
 // --- Grain on the field -------------------------------------------------------
@@ -246,7 +261,7 @@ body:not(.is-mobile) {
 }
 
 body.theme-light {
-  --ig-sheet-a: 0.28;
+  --ig-sheet-a: 0.1;
 }
 
 body.theme-dark {
