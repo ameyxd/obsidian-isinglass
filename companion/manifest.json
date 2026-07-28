@@ -1,0 +1,9 @@
+{
+  "id": "isinglass-companion",
+  "name": "Isinglass Companion",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "Keeps the window appearance in sync with the Obsidian theme so the Isinglass glass material always matches.",
+  "author": "Amey Ambade",
+  "isDesktopOnly": true
+}
