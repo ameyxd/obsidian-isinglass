@@ -75,11 +75,11 @@ body {
   // but Style Settings and the checker both read body-level declarations, so
   // the per-mode values are set here via the theme classes.
   &.theme-dark {
-    --ig-material-scale: 1.0;
+    --ig-material-scale: 0.75;
   }
 
   &.theme-light {
-    --ig-material-scale: 0.8;
+    --ig-material-scale: 0.75;
   }
 
   // Per-level alpha. Each level's coefficient is how much transparency that
@@ -213,6 +213,7 @@ body {
 body.is-translucent {
   --workspace-background-translucent: transparent;
   --ig-translucency: var(--ig-material-scale);
+  --ig-field-strength: 0.3;
 
 }
 // The luminous field in _glass.scss deliberately KEEPS painting here: every

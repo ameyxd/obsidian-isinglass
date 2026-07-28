@@ -237,8 +237,11 @@ for (const mode of [readMode('light'), readMode('dark')]) {
       // backdrop tone. Parsed from the compiled CSS so the checker cannot
       // drift from what ships.
       const veil = decl(b, '--ig-veil') ?? '';
-      // Lightness is always the value immediately before the alpha slash.
-      const stops = [...veil.matchAll(/([\d.]+)%\s*\/\s*([\d.]+)\)/g)];
+      // Lightness precedes the alpha slash; the alpha may be wrapped in a
+      // field-strength calc — verify at full strength, the worst case.
+      const stops = [...veil.matchAll(
+        /([\d.]+)%\s*\/\s*(?:calc\(var\(--ig-field-strength\)\s*\*\s*)?([\d.]+)\)/g
+      )];
       if (!stops.length) {
         throw new Error(`contrast-check: no parsable stops in --ig-veil for theme-${mode.name}`);
       }
