@@ -971,6 +971,39 @@ body.theme-dark {
   --ig-toplight-l: 18%;
 }
 
+.workspace::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--ig-grain);
+  opacity: calc(var(--ig-grain-opacity) * 0.8);
+  mix-blend-mode: soft-light;
+}
+
+body:not(.is-mobile) .workspace-split.mod-left-split,
+body:not(.is-mobile) .workspace-split.mod-right-split,
+body:not(.is-mobile) .workspace-split.mod-root {
+  -webkit-backdrop-filter: blur(24px) saturate(150%) brightness(1.03);
+  backdrop-filter: blur(24px) saturate(150%) brightness(1.03);
+}
+
+.workspace-split.mod-left-split,
+.workspace-split.mod-right-split,
+.workspace-split.mod-root {
+  background-image: linear-gradient(180deg, rgb(255, 255, 255, var(--ig-sheet-a)) 0%, rgb(255, 255, 255, calc(var(--ig-sheet-a) * 0.4)) 100%);
+  box-shadow: inset 0 1px 0 0 var(--ig-glass-highlight-soft);
+}
+
+body.theme-light {
+  --ig-sheet-a: 0.28;
+}
+
+body.theme-dark {
+  --ig-sheet-a: 0.045;
+}
+
 body.is-mobile .nav-file-title,
 body.is-mobile .nav-folder-title {
   min-height: 44px;
@@ -1206,6 +1239,13 @@ body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
     --ig-grain-opacity: 0;
     --ig-blur: 0px;
     --ig-blur-saturate: 100%;
+    --ig-sheet-a: 0;
+  }
+  body:not(.is-mobile) .workspace-split.mod-left-split,
+  body:not(.is-mobile) .workspace-split.mod-right-split,
+  body:not(.is-mobile) .workspace-split.mod-root {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
   body.is-translucent {
     --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));

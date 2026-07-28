@@ -24,6 +24,15 @@
     --ig-grain-opacity: 0;
     --ig-blur: 0px;
     --ig-blur-saturate: 100%;
+    --ig-sheet-a: 0;
+  }
+
+  // The pane treatment is a filter, not an alpha — explicit off.
+  body:not(.is-mobile) .workspace-split.mod-left-split,
+  body:not(.is-mobile) .workspace-split.mod-right-split,
+  body:not(.is-mobile) .workspace-split.mod-root {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   // With the toggle on, macOS clears the window under us; put a floor back.
