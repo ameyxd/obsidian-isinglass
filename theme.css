@@ -957,11 +957,7 @@ body.theme-dark {
 
 body {
   --ig-user-aurora: 1;
-  --ig-window-opacity: 0.88;
-}
-
-body.theme-light {
-  --ig-window-opacity: 0.92;
+  --ig-window-opacity: 1;
 }
 
 body.theme-light {

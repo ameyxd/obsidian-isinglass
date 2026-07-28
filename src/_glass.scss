@@ -175,18 +175,11 @@ body {
   // via reduced-transparency/high-contrast, which also go opaque.
   --ig-user-aurora: 1;
 
-  // REAL window transparency, applied by the Isinglass Companion plugin via
-  // Electron setOpacity — the one see-through mechanism Obsidian's window bug
-  // does not block. The whole window fades together (text included); that is
-  // the physics of window-server compositing, and why the floor sits at 0.8
-  // in the companion. Without the plugin this variable is inert and the theme
-  // simply stays painted glass.
-  --ig-window-opacity: 0.88;
-}
-
-body.theme-light {
-  // A white window ghosts faster than a dark one at equal opacity.
-  --ig-window-opacity: 0.92;
+  // Whole-window ghost transparency via the companion (Electron setOpacity).
+  // Default is SOLID: with the vibrancy patch in place, real OS-blurred frost
+  // carries the glass and fading text is pure cost. The slider remains for
+  // anyone who wants ghosting on top.
+  --ig-window-opacity: 1;
 }
 
 body.theme-light {
