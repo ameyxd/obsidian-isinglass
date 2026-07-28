@@ -952,7 +952,7 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(90% 70% at 12% -5%, hsl(var(--accent-h), 45%, var(--ig-blob-l), calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%, transparent 55%), radial-gradient(70% 60% at 92% 18%, hsl(calc(var(--accent-h) + 40), 40%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%, transparent 60%), radial-gradient(85% 70% at 55% 108%, hsl(calc(var(--accent-h) - 30), 42%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%, transparent 55%), linear-gradient(180deg, hsl(var(--ig-h), var(--ig-s), var(--ig-toplight-l), 0.5) 0%, transparent 45%);
+  background: radial-gradient(90% 70% at 12% -5%, hsl(var(--ig-h), 8%, var(--ig-blob-l), calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%, transparent 55%), radial-gradient(70% 60% at 92% 18%, hsl(var(--ig-h), 6%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%, transparent 60%), radial-gradient(85% 70% at 55% 108%, hsl(var(--ig-h), 8%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%, transparent 55%), linear-gradient(180deg, hsl(var(--ig-h), var(--ig-s), var(--ig-toplight-l), 0.5) 0%, transparent 45%);
 }
 
 body {
@@ -960,14 +960,14 @@ body {
 }
 
 body.theme-light {
-  --ig-blob-l: 82%;
-  --ig-blob-a: 0.6;
+  --ig-blob-l: 78%;
+  --ig-blob-a: 0.55;
   --ig-toplight-l: 100%;
 }
 
 body.theme-dark {
-  --ig-blob-l: 34%;
-  --ig-blob-a: 0.55;
+  --ig-blob-l: 38%;
+  --ig-blob-a: 0.5;
   --ig-toplight-l: 18%;
 }
 
@@ -1112,7 +1112,7 @@ settings:
   -
     id: ig-user-aurora
     title: Luminous field
-    description: The soft accent-hued field behind the glass. Lowering it flattens the glass; 0 disables it.
+    description: The soft neutral luminance behind the glass. Lowering it flattens the glass; 0 disables it.
     type: variable-number-slider
     default: 1
     min: 0

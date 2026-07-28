@@ -139,7 +139,7 @@ function auroraExtremes(modeName, base) {
   let lo = null;
   let hi = null;
   for (let h = 0; h < 360; h += 15) {
-    const c = composite(hslToRgb(h, 45, l), a, base);
+    const c = composite(hslToRgb(h, 8, l), a, base);
     const lum = relativeLuminance(c);
     if (lo === null || lum < lo.lum) lo = { c, lum };
     if (hi === null || lum > hi.lum) hi = { c, lum };

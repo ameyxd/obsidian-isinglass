@@ -137,9 +137,10 @@ body.theme-dark {
 // not decoration; it is the thing the glass is made of. It paints in EVERY
 // state, including over the OS material.
 //
-// Three soft accent-hued blobs at low saturation plus a monochrome top-light.
-// Low saturation is what separates this from the rejected "aurora": luminance
-// does the work, hue only whispers.
+// Three soft NEUTRAL blobs plus the top-light — pure luminance, no hue. Two
+// coloured backdrops were tried and rejected by the owner; the final call is
+// colourless glass. The blobs keep the theme's base hue at whisper saturation
+// (8%) only so the greys don't drift warm against the cool surfaces.
 .workspace::before {
   content: '';
   position: absolute;
@@ -149,19 +150,19 @@ body.theme-dark {
   background:
     radial-gradient(
       90% 70% at 12% -5%,
-      hsl(var(--accent-h) 45% var(--ig-blob-l) /
+      hsl(var(--ig-h) 8% var(--ig-blob-l) /
         calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%,
       transparent 55%
     ),
     radial-gradient(
       70% 60% at 92% 18%,
-      hsl(calc(var(--accent-h) + 40) 40% var(--ig-blob-l) /
+      hsl(var(--ig-h) 6% var(--ig-blob-l) /
         calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%,
       transparent 60%
     ),
     radial-gradient(
       85% 70% at 55% 108%,
-      hsl(calc(var(--accent-h) - 30) 42% var(--ig-blob-l) /
+      hsl(var(--ig-h) 8% var(--ig-blob-l) /
         calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%,
       transparent 55%
     ),
@@ -181,15 +182,15 @@ body {
 
 body.theme-light {
   // Light glass reads through slightly DARKER luminous blobs on a white field.
-  --ig-blob-l: 82%;
-  --ig-blob-a: 0.6;
+  --ig-blob-l: 78%;
+  --ig-blob-a: 0.55;
   --ig-toplight-l: 100%;
 }
 
 body.theme-dark {
   // Dark glass reads through slightly LIGHTER blobs on a black field.
-  --ig-blob-l: 34%;
-  --ig-blob-a: 0.55;
+  --ig-blob-l: 38%;
+  --ig-blob-a: 0.5;
   --ig-toplight-l: 18%;
 }
 
