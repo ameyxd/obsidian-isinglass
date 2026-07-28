@@ -147,12 +147,36 @@ function auroraExtremes(modeName, base) {
   return { 'aurora (darkest hue)': lo.c, 'aurora (brightest hue)': hi.c };
 }
 
-// One rendering model, two budgets. These translucency values must match the
-// body default and body.is-mobile override in _tiers.scss — an earlier version
-// of this table still said desktop runs opaque after the CSS default had moved
-// to 1, which is precisely the CSS/checker drift this project keeps paying for.
+// These translucency values must match _tiers.scss (body default,
+// body.is-mobile, and --ig-material-scale) — an earlier version of this table
+// still said desktop runs opaque after the CSS default had moved to 1, which is
+// precisely the CSS/checker drift this project keeps paying for.
+//
+// MATERIAL_SCALE mirrors --ig-material-scale: how far surfaces open when a
+// real OS material (macOS vibrancy / Windows Mica) is behind the window.
+const MATERIAL_SCALE = 0.8;
+
+// A live material blends its own appearance tint (dominant) with whatever is
+// behind the window. Modelled as tint at 0.6 weight over black/white wallpaper
+// extremes — the same bound as the original vibrancy model. This assumes the
+// material's appearance MATCHES the theme mode: the mismatch case (light
+// material under a dark theme) is unbounded-hostile and is clamped to opaque
+// in _tiers.scss rather than modelled here. Mid-grey both-polarity bounds were
+// tried and cap every pane near opaque — AA against a backdrop that can be any
+// grey is unwinnable, so the mismatch is excluded, not survived.
+function materialExtremes(modeName) {
+  const tint = modeName === 'light' ? 255 : 0;
+  const out = {};
+  for (const [name, paper] of [['black', 0], ['white', 255]]) {
+    const v = tint * 0.6 + paper * 0.4;
+    out[`material over ${name}`] = [v, v, v];
+  }
+  return out;
+}
+
 const TIERS = [
   { id: 'desktop', translucency: 1, float: 1 },
+  { id: 'material-window', translucency: MATERIAL_SCALE, float: 1, material: true },
   { id: 'mobile', translucency: 0.6, float: 0.7 },
 ];
 
@@ -192,24 +216,31 @@ for (const mode of [readMode('light'), readMode('dark')]) {
     // so its true backdrop is an already-composited base surface. Checking L4
     // against the bare wallpaper would model a case that cannot occur, and
     // would force its alpha needlessly high.
-    // The real stack under a pane: opaque floor → backdrop gradients → pane.
-    // Three backdrop cases: the bare floor (gradients fade out over most of the
-    // screen), the always-on monochrome top-light at its strongest point, and
-    // the accent tint at its Style Settings maximum, swept across every hue.
-    const floor = mode.surface.l0;
-    const b = block(`body.theme-${mode.name}`);
-    const toplightL = parseFloat(decl(b, '--ig-toplight-l'));
-    if (Number.isNaN(toplightL)) {
-      throw new Error(`contrast-check: missing --ig-toplight-l for theme-${mode.name}`);
+    // The real stack under a pane depends on the tier. With a live OS material
+    // behind the window there is no floor and no gradients — panes composite
+    // straight onto the unknowable material, bounded by the grey extremes.
+    // Otherwise: opaque floor → backdrop gradients → pane, checked against the
+    // bare floor (gradients fade out over most of the screen), the top-light at
+    // its strongest, and the accent tint at its maximum swept across every hue.
+    let baseBackdrops;
+    if (tier.material) {
+      baseBackdrops = materialExtremes(mode.name);
+    } else {
+      const floor = mode.surface.l0;
+      const b = block(`body.theme-${mode.name}`);
+      const toplightL = parseFloat(decl(b, '--ig-toplight-l'));
+      if (Number.isNaN(toplightL)) {
+        throw new Error(`contrast-check: missing --ig-toplight-l for theme-${mode.name}`);
+      }
+      const h = parseFloat(decl(b, '--ig-h'));
+      const s = parseFloat(decl(b, '--ig-s'));
+      baseBackdrops = {
+        'bare floor': floor,
+        // 0.5 must match the top-light gradient alpha in _glass.scss.
+        'top-light on floor': composite(hslToRgb(h, s, toplightL), 0.5, floor),
+        ...auroraExtremes(mode.name, floor),
+      };
     }
-    const h = parseFloat(decl(b, '--ig-h'));
-    const s = parseFloat(decl(b, '--ig-s'));
-    const baseBackdrops = {
-      'bare floor': floor,
-      // 0.5 must match the top-light gradient alpha in _glass.scss.
-      'top-light on floor': composite(hslToRgb(h, s, toplightL), 0.5, floor),
-      ...auroraExtremes(mode.name, floor),
-    };
 
     const composited = (lvl, bg) =>
       alpha[lvl] >= 0.999 ? mode.surface[lvl] : composite(mode.surface[lvl], alpha[lvl], bg);

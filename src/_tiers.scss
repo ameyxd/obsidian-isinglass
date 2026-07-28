@@ -15,22 +15,26 @@
 // So `.is-translucent` appears on macOS and nowhere else — the settings row
 // itself is gated on isDarwin(), and Windows users never see the toggle.
 //
-// The design does NOT depend on that toggle. On macOS 26 the vibrancy material
-// turned out to be static (dragging the window across the desktop changes
-// nothing behind it), so revealing it only dimmed the interface. Instead the
-// theme paints its own backdrop (the aurora, _glass.scss) and every platform
-// frosts over that. Glass is on by default everywhere; what varies per path is
-// only what sits at the very bottom of the stack:
+// The Pseudo Mica plugin widens this: it can swap the hardcoded `sidebar`
+// vibrancy for any macOS material (under-window, hud, window...), and on
+// Windows it enables real Mica/Acrylic and adds `is-translucent` itself. So
+// `.is-translucent` means one thing everywhere: A REAL OS MATERIAL IS BEHIND
+// THE WINDOW.
 //
-// There is ONE rendering model on every platform: an opaque floor, the aurora
-// painted over it, and alpha'd surfaces frosting over both. The floor is
-// unconditional — see "The opaque floor" below — so the OS material can never
-// reach the visible stack, and the same verified pixels render on macOS,
-// Windows, and iOS. `.is-translucent` survives only as plumbing: when the
-// toggle is on, Obsidian re-routes the backdrop through its own variable, and
-// the theme routes the floor through it. Mobile differs in budget, not model.
+// Two rendering states follow:
 //
-// Floating layers (L4) backdrop-blur Obsidian's own content everywhere.
+//   material present (.is-translucent)   No floor, no painted backdrop. Panes
+//                                        open to --ig-material-scale — the AA
+//                                        ceiling against a matched-appearance
+//                                        material — and reveal the real thing.
+//                                        The system/theme appearance mismatch
+//                                        is clamped opaque (see below).
+//
+//   no material (default, mobile)        Opaque floor + painted top-light and
+//                                        optional accent tint. Same verified
+//                                        pixels on every platform.
+//
+// Floating layers (L4) backdrop-blur Obsidian's own content in both states.
 // ---------------------------------------------------------------------------
 
 // --- Tier B / C: the opaque default ----------------------------------------
@@ -59,6 +63,13 @@ body {
   // appearance-mismatch reductions below and let a slider undo a safety
   // fallback. As a multiplier it composes with them and can only reduce.
   --ig-user-glass: 1;
+
+  // How far surfaces open up when a real OS material is behind the window
+  // (macOS vibrancy via the toggle, or Windows Mica/Acrylic via Pseudo Mica).
+  // Set by contrast-check sweep: 0.8 is the AA ceiling against a
+  // MATCHED-APPEARANCE material (its own tint at 0.6 weight over black/white
+  // extremes); 0.85 fails. The unmatched material is clamped, not survived.
+  --ig-material-scale: 0.8;
 
   // Per-level alpha. Each level's coefficient is how much transparency that
   // level is allowed at full strength — L2 (the note surface) gets the least,
@@ -93,13 +104,11 @@ body {
 //    window this rendered as neon glitch bands and magenta smears across the
 //    panes — the frost must always have defined content to blur.
 //
-// Consequence, stated plainly: this theme SUPERSEDES Obsidian's translucency
-// toggle. The macOS 26 material is static (delivers a fixed wash, not the
-// desktop), so the toggle bought nothing and cost correctness. With the floor
-// always present, every platform — and every system/theme appearance
-// combination — renders the same verified stack: floor, aurora, glass panes.
-// The old appearance-mismatch fallback existed only to protect text from the
-// OS material and is gone because the material can no longer show through.
+// Obsidian's own `body.is-translucent { background-color: transparent }`
+// out-specifies this rule, so the floor turns itself off exactly when a real
+// material takes over — no extra state needed. The glitch risk that once made
+// a transparent stack dangerous is gone with base-pane backdrop-filter: only
+// floating layers blur, and they sample in-app content above the base.
 
 body {
   background-color: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
@@ -176,17 +185,49 @@ body {
 // Note also `:not(.is-fullscreen)`: Obsidian disables translucency outright in
 // fullscreen. Nothing a theme can do about that.
 
-// With the toggle on, Obsidian clears its own chrome and hands the glass layer
-// to this variable. Give it the same opaque floor as everywhere else: the body
-// floor above cannot help here, because Obsidian paints `.app-container` (this
-// variable) over the body, and the OS material below it is a static wash that
-// must never reach the frost's sampling region.
+// With the toggle on (or the Pseudo Mica plugin active), a REAL window
+// material exists — macOS vibrancy or Windows Mica/Acrylic — and the theme's
+// job is to reveal it: transparent glass layer, no floor, and every surface
+// alpha scaled to the AA ceiling for an unknown material.
 //
-// Deliberately NOT `transparent`: that was the state that produced the glitch
-// bands. And deliberately not an alpha'd surface: translucent layers multiply
-// (an earlier stacking bug shipped exactly that way).
+// Obsidian's own `body.is-translucent { background-color: transparent }`
+// out-specifies the body floor above, so the floor turns itself off here
+// without a rule. Safe now, unlike the build that glitched: base panes carry
+// no backdrop-filter anymore, so nothing ever samples the transparent stack —
+// the OS blurs the material, the theme only tints it.
+//
+// --ig-material-scale is the price of not knowing what the material shows:
+// contrast-check verifies this state against mid-grey worst-case backdrops,
+// and the scale holds every pane at that ceiling.
 body.is-translucent {
-  --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
+  --workspace-background-translucent: transparent;
+  --ig-translucency: var(--ig-material-scale);
+
+  // The backdrop gradients would paint over the material; get them out of the
+  // way and let the real thing through.
+  .workspace::before {
+    display: none;
+  }
+}
+
+// The one state a real material makes unwinnable: the material follows the
+// SYSTEM appearance, so system-light + Obsidian-dark (or the reverse) puts a
+// wrong-polarity backdrop behind every pane. No AA-passing translucency exists
+// against it — contrast-check proved mid-grey backdrops cap the panes near
+// opaque — so the mismatch is clamped, not survived: full floor, no glass.
+// Match your system and Obsidian appearance to get the material back.
+@media (prefers-color-scheme: light) {
+  body.is-translucent.theme-dark {
+    --ig-material-scale: 0;
+    --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body.is-translucent.theme-light {
+    --ig-material-scale: 0;
+    --workspace-background-translucent: hsl(var(--ig-h) var(--ig-s) var(--ig-l0-l));
+  }
 }
 
 // Tiers B and C: no glass layer exists, so the backdrop is painted normally.
