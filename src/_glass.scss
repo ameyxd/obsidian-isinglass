@@ -128,6 +128,18 @@ body.theme-dark {
   isolation: isolate;
 }
 
+// The luminous field. Glass is not perceived through transparency percentages
+// — it is perceived through LUMINANCE VARIATION behind the surface. A verified
+// finding on macOS 26: every behind-window material (sidebar, hud, under-window,
+// fullscreen-ui...) renders the same static wash, near-black in dark appearance
+// and near-white in light. Open panes over that read as a flat slab in dark and
+// as invisible in light — both were reported as "broken". So the field below is
+// not decoration; it is the thing the glass is made of. It paints in EVERY
+// state, including over the OS material.
+//
+// Three soft accent-hued blobs at low saturation plus a monochrome top-light.
+// Low saturation is what separates this from the rejected "aurora": luminance
+// does the work, hue only whispers.
 .workspace::before {
   content: '';
   position: absolute;
@@ -135,15 +147,24 @@ body.theme-dark {
   z-index: -1;
   pointer-events: none;
   background:
-    // Optional accent tint, off by default (--ig-user-aurora: 0).
     radial-gradient(
-      120% 90% at 15% 0%,
-      hsl(var(--accent-h) 60% var(--ig-aurora-l) /
-        calc(var(--ig-aurora-a) * var(--ig-user-aurora))) 0%,
+      90% 70% at 12% -5%,
+      hsl(var(--accent-h) 45% var(--ig-blob-l) /
+        calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%,
+      transparent 55%
+    ),
+    radial-gradient(
+      70% 60% at 92% 18%,
+      hsl(calc(var(--accent-h) + 40) 40% var(--ig-blob-l) /
+        calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%,
       transparent 60%
     ),
-    // Always-on monochrome top-light: enough luminance movement for the ladder
-    // to read as sheets, no hue for the eye to call weird.
+    radial-gradient(
+      85% 70% at 55% 108%,
+      hsl(calc(var(--accent-h) - 30) 42% var(--ig-blob-l) /
+        calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%,
+      transparent 55%
+    ),
     linear-gradient(
       180deg,
       hsl(var(--ig-h) var(--ig-s) var(--ig-toplight-l) / 0.5) 0%,
@@ -152,19 +173,24 @@ body.theme-dark {
 }
 
 body {
-  --ig-user-aurora: 0;
+  // The field ships ON. The slider (Style Settings "Accent tint") can quiet it,
+  // but a glass theme with no field is a flat theme — that state is reached via
+  // reduced-transparency/high-contrast, which also go opaque.
+  --ig-user-aurora: 1;
 }
 
 body.theme-light {
-  --ig-aurora-l: 90%;
-  --ig-aurora-a: 0.55;
+  // Light glass reads through slightly DARKER luminous blobs on a white field.
+  --ig-blob-l: 82%;
+  --ig-blob-a: 0.6;
   --ig-toplight-l: 100%;
 }
 
 body.theme-dark {
-  --ig-aurora-l: 24%;
-  --ig-aurora-a: 0.38;
-  --ig-toplight-l: 16%;
+  // Dark glass reads through slightly LIGHTER blobs on a black field.
+  --ig-blob-l: 34%;
+  --ig-blob-a: 0.55;
+  --ig-toplight-l: 18%;
 }
 
 // --- No frost on base panes --------------------------------------------------

@@ -131,15 +131,15 @@ function readMode(name) {
 // brighter than blue), so both extremes are checked.
 function auroraExtremes(modeName, base) {
   const b = block(`body.theme-${modeName}`);
-  const l = parseFloat(decl(b, '--ig-aurora-l'));
-  const a = parseFloat(decl(b, '--ig-aurora-a'));
+  const l = parseFloat(decl(b, '--ig-blob-l'));
+  const a = parseFloat(decl(b, '--ig-blob-a'));
   if (Number.isNaN(l) || Number.isNaN(a)) {
-    throw new Error(`contrast-check: missing --ig-aurora-* for theme-${modeName}`);
+    throw new Error(`contrast-check: missing --ig-blob-* for theme-${modeName}`);
   }
   let lo = null;
   let hi = null;
   for (let h = 0; h < 360; h += 15) {
-    const c = composite(hslToRgb(h, 70, l), a, base);
+    const c = composite(hslToRgb(h, 45, l), a, base);
     const lum = relativeLuminance(c);
     if (lo === null || lum < lo.lum) lo = { c, lum };
     if (hi === null || lum > hi.lum) hi = { c, lum };

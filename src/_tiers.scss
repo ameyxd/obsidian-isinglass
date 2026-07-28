@@ -214,12 +214,13 @@ body.is-translucent {
   --workspace-background-translucent: transparent;
   --ig-translucency: var(--ig-material-scale);
 
-  // The backdrop gradients would paint over the material; get them out of the
-  // way and let the real thing through.
-  .workspace::before {
-    display: none;
-  }
 }
+// The luminous field in _glass.scss deliberately KEEPS painting here: every
+// macOS 26 material renders a flat static wash (verified by cycling
+// under-window/hud/fullscreen-ui — pixel-identical), and open panes over a flat
+// wash read as a slab in dark and as nothing in light. The field supplies the
+// luminance variation that makes the glass visible; any liveliness the material
+// ever gains still shows through beneath it.
 
 // The one state a real material makes unwinnable: the material follows the
 // SYSTEM appearance, so system-light + Obsidian-dark (or the reverse) puts a

@@ -119,9 +119,6 @@ body.is-translucent {
   --workspace-background-translucent: transparent;
   --ig-translucency: var(--ig-material-scale);
 }
-body.is-translucent .workspace::before {
-  display: none;
-}
 
 @media (prefers-color-scheme: light) {
   body.is-translucent.theme-dark {
@@ -955,23 +952,23 @@ body.theme-dark {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background: radial-gradient(120% 90% at 15% 0%, hsl(var(--accent-h), 60%, var(--ig-aurora-l), calc(var(--ig-aurora-a) * var(--ig-user-aurora))) 0%, transparent 60%), linear-gradient(180deg, hsl(var(--ig-h), var(--ig-s), var(--ig-toplight-l), 0.5) 0%, transparent 45%);
+  background: radial-gradient(90% 70% at 12% -5%, hsl(var(--accent-h), 45%, var(--ig-blob-l), calc(var(--ig-blob-a) * var(--ig-user-aurora))) 0%, transparent 55%), radial-gradient(70% 60% at 92% 18%, hsl(calc(var(--accent-h) + 40), 40%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.8 * var(--ig-user-aurora))) 0%, transparent 60%), radial-gradient(85% 70% at 55% 108%, hsl(calc(var(--accent-h) - 30), 42%, var(--ig-blob-l), calc(var(--ig-blob-a) * 0.7 * var(--ig-user-aurora))) 0%, transparent 55%), linear-gradient(180deg, hsl(var(--ig-h), var(--ig-s), var(--ig-toplight-l), 0.5) 0%, transparent 45%);
 }
 
 body {
-  --ig-user-aurora: 0;
+  --ig-user-aurora: 1;
 }
 
 body.theme-light {
-  --ig-aurora-l: 90%;
-  --ig-aurora-a: 0.55;
+  --ig-blob-l: 82%;
+  --ig-blob-a: 0.6;
   --ig-toplight-l: 100%;
 }
 
 body.theme-dark {
-  --ig-aurora-l: 24%;
-  --ig-aurora-a: 0.38;
-  --ig-toplight-l: 16%;
+  --ig-blob-l: 34%;
+  --ig-blob-a: 0.55;
+  --ig-toplight-l: 18%;
 }
 
 body.is-mobile .nav-file-title,
@@ -1081,10 +1078,10 @@ settings:
     step: 0.05
   -
     id: ig-user-aurora
-    title: Accent tint
-    description: An optional soft wash of your accent colour behind the workspace. Off by default.
+    title: Luminous field
+    description: The soft accent-hued field behind the glass. Lowering it flattens the glass; 0 disables it.
     type: variable-number-slider
-    default: 0
+    default: 1
     min: 0
     max: 1
     step: 0.05
@@ -1205,7 +1202,7 @@ body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
   body {
     --ig-translucency: 0;
     --ig-float-translucency: 0;
-    --ig-aurora-a: 0;
+    --ig-blob-a: 0;
     --ig-grain-opacity: 0;
     --ig-blur: 0px;
     --ig-blur-saturate: 100%;
@@ -1223,7 +1220,7 @@ body.ig-hide-tabs .workspace-tabs.mod-top .workspace-tab-header-container {
 body.ig-high-contrast {
   --ig-translucency: 0;
   --ig-float-translucency: 0;
-  --ig-aurora-a: 0;
+  --ig-blob-a: 0;
   --ig-grain-opacity: 0;
   --ig-border: var(--ig-border-strong);
   --ig-text-faint: var(--ig-text-muted);
@@ -1243,7 +1240,7 @@ body.ig-high-contrast.theme-dark {
   body {
     --ig-translucency: 0;
     --ig-float-translucency: 0;
-    --ig-aurora-a: 0;
+    --ig-blob-a: 0;
     --ig-grain-opacity: 0;
     --ig-border: var(--ig-border-strong);
     --ig-text-faint: var(--ig-text-muted);

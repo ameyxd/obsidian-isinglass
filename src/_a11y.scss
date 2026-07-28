@@ -20,7 +20,7 @@
   body {
     --ig-translucency: 0;
     --ig-float-translucency: 0;
-    --ig-aurora-a: 0;
+    --ig-blob-a: 0;
     --ig-grain-opacity: 0;
     --ig-blur: 0px;
     --ig-blur-saturate: 100%;
@@ -49,7 +49,7 @@
 @mixin high-contrast {
   --ig-translucency: 0;
   --ig-float-translucency: 0;
-  --ig-aurora-a: 0;
+  --ig-blob-a: 0;
   --ig-grain-opacity: 0;
 
   --ig-border: var(--ig-border-strong);
