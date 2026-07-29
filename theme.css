@@ -73,7 +73,7 @@ body.theme-dark {
   --ig-material-scale: 0.75;
 }
 body.theme-light {
-  --ig-material-scale: 0.75;
+  --ig-material-scale: 0.9;
 }
 body {
   --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency) * var(--ig-user-glass));

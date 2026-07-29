@@ -155,7 +155,7 @@ function auroraExtremes(modeName, base) {
 // MATERIAL_SCALE mirrors --ig-material-scale (per theme mode in _tiers.scss):
 // how far surfaces open when a real OS material is behind the window. Each
 // mode gets its own ceiling — their material extremes are not symmetric.
-const MATERIAL_SCALE = { light: 0.8, dark: 1.0 };
+const MATERIAL_SCALE = { light: 0.9, dark: 0.75 };
 
 // A live material blends its own appearance tint (dominant) with whatever is
 // behind the window. Modelled as tint at 0.6 weight over black/white wallpaper
@@ -189,9 +189,13 @@ function resolveTranslucency(tier, mode) {
 // only for decorative metadata and is held to the large-text threshold.
 const REQUIRED = { normal: 4.5, muted: 4.5, faint: 3.0 };
 
-// Which text tokens actually appear on which surfaces.
+// Which text tokens actually appear on which surfaces. L0 is the workspace
+// backdrop — the gaps between panes. No body-grade text sits on it (sidebar
+// text is L1, notes are L2, the status bar is L1); holding it to muted-text
+// AA was a phantom requirement that capped light mode. `faint` stays as a
+// guard for any stray decorative label.
 const PAIRS = [
-  ['l0', ['muted', 'faint']],
+  ['l0', ['faint']],
   ['l1', ['normal', 'muted', 'faint']],
   ['l2', ['normal', 'muted', 'faint']],
   ['l3', ['normal', 'muted']],
