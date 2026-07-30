@@ -255,19 +255,24 @@ button.mod-cta {
 // unresolved is fainter and Obsidian halves its alpha on top.
 
 body {
-  --graph-line: var(--ig-border);
   --graph-node-focused: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
   --graph-node-tag: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.7);
 }
 
+// Lines get their own values too — mapping them to the border token was the
+// node mistake repeated: borders are engineered to recede against surfaces
+// (26% lightness dark / 84% light), which camouflages canvas lines entirely.
+// Lines sit between backdrop and nodes: clearly present, quieter than nodes.
 body.theme-light {
   --graph-node: hsl(220 10% 58%);
   --graph-node-unresolved: hsl(220 8% 72%);
+  --graph-line: hsl(220 8% 68%);
 }
 
 body.theme-dark {
   --graph-node: hsl(220 9% 52%);
   --graph-node-unresolved: hsl(220 8% 36%);
+  --graph-line: hsl(220 8% 42%);
 }
 
 // --- Canvas -----------------------------------------------------------------
