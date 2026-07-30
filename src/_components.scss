@@ -247,13 +247,27 @@ button.mod-cta {
 
 // --- Graph ------------------------------------------------------------------
 // The graph draws to canvas, so it reads these variables rather than CSS rules.
+//
+// Nodes are NOT mapped to text tokens: the text ramp is AA-contrast-pushed
+// (30% lightness in light mode, 80% in dark), which rendered nodes as
+// maximum-contrast dots — ink on light, glare on dark. Nodes are shapes, and
+// get their own soft mid-tones per mode. Focused/tag stay accent-driven;
+// unresolved is fainter and Obsidian halves its alpha on top.
 
 body {
   --graph-line: var(--ig-border);
-  --graph-node: var(--ig-text-muted);
   --graph-node-focused: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
   --graph-node-tag: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.7);
-  --graph-node-unresolved: var(--ig-text-faint);
+}
+
+body.theme-light {
+  --graph-node: hsl(220 10% 58%);
+  --graph-node-unresolved: hsl(220 8% 72%);
+}
+
+body.theme-dark {
+  --graph-node: hsl(220 9% 52%);
+  --graph-node-unresolved: hsl(220 8% 36%);
 }
 
 // --- Canvas -----------------------------------------------------------------
