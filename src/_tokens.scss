@@ -82,8 +82,8 @@ body.theme-light {
   // clear AA against an L0/L1 surface composited over a *black* wallpaper in
   // tier A. Lightening either one fails contrast-check.
   --ig-text-normal: hsl(220 15% 17%);
-  --ig-text-muted: hsl(220 12% 30%);
-  --ig-text-faint: hsl(220 10% 39%);
+  --ig-text-muted: hsl(220 12% 27%);
+  --ig-text-faint: hsl(220 10% 36%);
   --ig-text-on-accent: hsl(0 0% 100%);
 
   --ig-border: hsl(220 15% 84%);

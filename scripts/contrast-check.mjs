@@ -155,7 +155,7 @@ function auroraExtremes(modeName, base) {
 // MATERIAL_SCALE mirrors --ig-material-scale (per theme mode in _tiers.scss):
 // how far surfaces open when a real OS material is behind the window. Each
 // mode gets its own ceiling — their material extremes are not symmetric.
-const MATERIAL_SCALE = { light: 0.9, dark: 0.75 };
+const MATERIAL_SCALE = { light: 1.0, dark: 0.75 };
 
 // A live material blends its own appearance tint (dominant) with whatever is
 // behind the window. Modelled as tint at 0.6 weight over black/white wallpaper

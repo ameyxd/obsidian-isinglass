@@ -26,8 +26,8 @@ body.theme-light {
   --ig-l3-l: 97%;
   --ig-l4-l: 98%;
   --ig-text-normal: hsl(220 15% 17%);
-  --ig-text-muted: hsl(220 12% 30%);
-  --ig-text-faint: hsl(220 10% 39%);
+  --ig-text-muted: hsl(220 12% 27%);
+  --ig-text-faint: hsl(220 10% 36%);
   --ig-text-on-accent: hsl(0 0% 100%);
   --ig-border: hsl(220 15% 84%);
   --ig-border-strong: hsl(220 15% 74%);
@@ -73,7 +73,7 @@ body.theme-dark {
   --ig-material-scale: 0.75;
 }
 body.theme-light {
-  --ig-material-scale: 0.9;
+  --ig-material-scale: 1.0;
 }
 body {
   --ig-a-l0: calc(1 - 0.65 * var(--ig-translucency) * var(--ig-user-glass));
