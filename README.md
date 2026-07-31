@@ -1,64 +1,83 @@
 # Isinglass
 
-A minimal, translucent theme for Obsidian. Light and dark, for macOS, Windows, and iOS.
+A minimal, translucent frosted-glass theme for Obsidian. Light and dark, for macOS, Windows,
+and iOS. Colourless by design: luminance does the work, hue only whispers.
 
 *Isinglass* is a thin transparent sheet of mica.
 
-> Under construction — not yet released.
+![Isinglass light](screenshots/light.png)
+![Isinglass dark](screenshots/dark.png)
 
-## What makes it different
+## What you get out of the box
 
-Obsidian's native translucency is **macOS-only**: the app sets the window background to
-`#00000000` and applies an Electron `sidebar` vibrancy, then adds `.is-translucent` to the body —
-all gated on `process.platform === "darwin"`. Windows users never even see the toggle.
-
-So "translucent theme" means something different on each platform, and most glass themes only
-really work on one. Isinglass renders one design language through three fidelity tiers:
-
-| Tier | Where | How depth is made |
-|---|---|---|
-| **A** | macOS with translucency on | CSS alpha reveals the real desktop wallpaper through the system vibrancy layer |
-| **B** | Windows, Linux, macOS with translucency off | Opaque surfaces separated by luminance steps and hairlines |
-| **C** | iOS and Android | As B, plus touch sizing and safe-area insets |
-
-Floating layers — modals, the command palette, suggestions, popovers — use `backdrop-filter` in
-every tier, because there it blurs Obsidian's own content and reads as real glass everywhere.
+- A layered glass interface: a soft neutral luminous field behind frosted panes, specular
+  edges, fine grain, and real backdrop blur on floating surfaces (menus, command palette,
+  modals, popovers).
+- Both modes, colourless. Your accent colour drives highlights, links, and the graph's focus
+  colour; the surfaces themselves stay neutral.
+- New York (ui-serif) for reading, the system font for interface, on every platform. Nothing
+  bundled.
+- Styled support for Dataview, Tasks, and Notebook Navigator, plus Canvas, Bases, and the
+  graph.
 
 ## Built to stay legible
 
-Translucency fights contrast, so contrast is verified rather than eyeballed. Every build
-composites each text token over each surface at each tier's alpha, against **both a pure-black
-and a pure-white wallpaper**, and asserts WCAG AA. The build fails otherwise.
+Translucency fights contrast, so this theme verifies instead of eyeballing: every build
+composites every text token over every surface, at every translucency state, against
+worst-case backdrops, and fails if any pair drops below WCAG AA. Enforced budgets keep
+`backdrop-filter` use, `!important` count, and file size in check.
 
-That verification is what sets the design's limits: base-surface translucency is capped near
-10–12%, because anything more cannot clear AA on an unknown wallpaper.
+The theme honours `prefers-reduced-transparency` and `prefers-reduced-motion`, ships an
+opaque high-contrast mode, and responds to the OS "reduce transparency" setting.
 
-The theme also honours `prefers-reduced-transparency` and `prefers-reduced-motion`, and ships an
-opaque high-contrast mode.
+## Style Settings
 
-## Budgets
+Install the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin for:
 
-Enforced on every build:
+- Glass intensity (up to 30% past the AA-verified ceiling, labelled as such)
+- Luminous field strength
+- Glass blur, texture grain
+- Window transparency (with the companion plugin below)
+- Reading line width, body line height, compact density
+- Hide tab bar / ribbon / status bar
+- High contrast mode (with a command)
 
-| Budget | Limit |
-|---|---|
-| `backdrop-filter` rules | 12 |
-| `!important` | 20 |
-| `theme.css` size | 150 KB |
+## Going further: real window transparency
+
+Out of the box, every platform gets the painted glass above. Obsidian currently ships a
+window-transparency regression (since 1.8.9) that blocks true see-through on macOS; two
+optional extras in this repo work around it:
+
+- **Isinglass Companion** (`companion/`, a small plugin): keeps the window appearance in sync
+  with your Obsidian theme so the OS material always matches, and applies the "Window
+  transparency" slider for real whole-window see-through.
+- **macOS vibrancy patch** (`companion/patch-macos-vibrancy.mjs`): restores true OS-blurred
+  frost behind the window by fixing Obsidian's missing `transparent` window flag. One-line
+  in-place patch, full backup, `--revert` included. Re-run after Obsidian updates. Use at
+  your own discretion — it modifies the installed app.
+- **Windows**: the [Pseudo Mica](https://github.com/aaaaalexis/obsidian-pseudo-mica) plugin
+  enables real Mica/Acrylic materials; Isinglass detects it and opens its surfaces
+  automatically. No patch needed.
+
+The theme detects a real material via Obsidian's own translucency state and re-balances
+itself: the painted field steps back and the genuine frost carries the glass.
+
+## Install
+
+Until the theme is in the community gallery: copy `manifest.json` and `theme.css` into
+`<your vault>/.obsidian/themes/Isinglass/`, then select Isinglass under Settings →
+Appearance → Themes.
 
 ## Development
 
 ```bash
 npm install
-npm run build
-```
-
-`npm run build` compiles `src/theme.scss` to `theme.css`, then runs the contrast and budget
-checks. Edit the SCSS modules, never `theme.css`.
-
-```bash
+npm run build   # sass -> theme.css, then contrast + budget verification
 npm run watch
 ```
+
+Edit the SCSS modules in `src/`, never `theme.css`. The build fails on any WCAG AA
+regression or budget overrun.
 
 ## Licence
 
