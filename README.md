@@ -5,8 +5,10 @@ and iOS. Colourless by design: luminance does the work, hue only whispers.
 
 *Isinglass* is a thin transparent sheet of mica.
 
-![Isinglass light](screenshots/light.png)
-![Isinglass dark](screenshots/dark.png)
+![Isinglass dark](screenshots/screenshot_1.png)
+![Style Settings panel](screenshots/screenshot_2.png)
+![Dark mode detail](screenshots/screenshot_3.png)
+![Isinglass light](screenshots/screenshot_4.png)
 
 ## What you get out of the box
 
