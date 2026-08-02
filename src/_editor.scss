@@ -226,8 +226,8 @@ body {
   --callout-padding: var(--ig-space-3) var(--ig-space-4);
   --callout-radius: var(--ig-radius-md);
 
-  background-color: rgba(var(--callout-color), 0.06);
-  border: var(--ig-hairline) solid rgba(var(--callout-color), 0.22);
+  background-color: color-mix(in srgb, var(--callout-color) 6%, transparent);
+  border: var(--ig-hairline) solid color-mix(in srgb, var(--callout-color) 22%, transparent);
   box-shadow: none;
 }
 
@@ -245,7 +245,7 @@ body {
 
 // A nested callout steps up rather than repeating the same tint.
 .markdown-rendered .callout .callout {
-  background-color: rgba(var(--callout-color), 0.1);
+  background-color: color-mix(in srgb, var(--callout-color) 10%, transparent);
 }
 
 // --- Tags -------------------------------------------------------------------
